@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Stock Market - Complete Screener</title>
+    <link rel="stylesheet" href="screener_styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Filters -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>📊 Filters</h2>
+                <button class="reset-all-btn" onclick="resetAllFilters()">Reset All</button>
+            </div>
+
+            <div class="filter-section">
+                <h3>Index</h3>
+                <select id="index-filter" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Indices</option>
+                    <option value="NIFTY50">Nifty 50</option>
+                    <option value="NIFTY500">Nifty 500</option>
+                    <option value="NIFTYBANK">Nifty Bank</option>
+                    <option value="NIFTYIT">Nifty IT</option>
+                    <option value="NIFTYPHARMA">Nifty Pharma</option>
+                    <option value="NIFTYAUTO">Nifty Auto</option>
+                    <option value="NIFTYFMCG">Nifty FMCG</option>
+                    <option value="NIFTYMETAL">Nifty Metal</option>
+                    <option value="NIFTYMIDCAP">Nifty Midcap</option>
+                    <option value="NIFTYSMALLCAP">Nifty Smallcap</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <h3>Sector</h3>
+                <select id="sector-filter" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Sectors</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <h3>Sub-Sector</h3>
+                <select id="subsector-filter" class="filter-select" onchange="applyFilters()">
+                    <option value="">All Sub-Sectors</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <h3>Market Cap</h3>
+                <div class="range-inputs">
+                    <input type="number" id="mcap-min" placeholder="Min (Cr)" onchange="applyFilters()">
+                    <input type="number" id="mcap-max" placeholder="Max (Cr)" onchange="applyFilters()">
+                </div>
+                <div class="quick-filters">
+                    <button onclick="setMCapFilter('large')">Large Cap</button>
+                    <button onclick="setMCapFilter('mid')">Mid Cap</button>
+                    <button onclick="setMCapFilter('small')">Small Cap</button>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3>P/E Ratio</h3>
+                <div class="range-inputs">
+                    <input type="number" id="pe-min" placeholder="Min" onchange="applyFilters()">
+                    <input type="number" id="pe-max" placeholder="Max" onchange="applyFilters()">
+                </div>
+                <div class="quick-filters">
+                    <button onclick="setPEFilter('low')">Low (&lt;15)</button>
+                    <button onclick="setPEFilter('moderate')">Moderate (15-25)</button>
+                    <button onclick="setPEFilter('high')">High (&gt;25)</button>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3>P/B Ratio</h3>
+                <div class="range-inputs">
+                    <input type="number" id="pb-min" placeholder="Min" onchange="applyFilters()">
+                    <input type="number" id="pb-max" placeholder="Max" onchange="applyFilters()">
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3>Dividend Yield %</h3>
+                <div class="range-inputs">
+                    <input type="number" id="div-min" placeholder="Min %" onchange="applyFilters()">
+                    <input type="number" id="div-max" placeholder="Max %" onchange="applyFilters()">
+                </div>
+                <div class="quick-filters">
+                    <button onclick="setDivFilter('high')">High (&gt;2%)</button>
+                    <button onclick="setDivFilter('moderate')">Moderate (1-2%)</button>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3>ROE %</h3>
+                <div class="range-inputs">
+                    <input type="number" id="roe-min" placeholder="Min %" onchange="applyFilters()">
+                    <input type="number" id="roe-max" placeholder="Max %" onchange="applyFilters()">
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3>Price Change %</h3>
+                <div class="range-inputs">
+                    <input type="number" id="change-min" placeholder="Min %" onchange="applyFilters()">
+                    <input type="number" id="change-max" placeholder="Max %" onchange="applyFilters()">
+                </div>
+                <div class="quick-filters">
+                    <button onclick="setChangeFilter('gainers')">Top Gainers</button>
+                    <button onclick="setChangeFilter('losers')">Top Losers</button>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3>Performance</h3>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="status-good" onchange="applyFilters()"> 🟢 Good</label>
+                    <label><input type="checkbox" id="status-neutral" onchange="applyFilters()"> 🟡 Neutral</label>
+                    <label><input type="checkbox" id="status-bad" onchange="applyFilters()"> 🔴 Bad</label>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="app-header">
+                <div class="header-left">
+                    <h1>📈 Indian Stock Market Screener</h1>
+                    <p class="subtitle">Complete data for all major indices</p>
+                </div>
+                <div class="header-right">
+                    <div class="search-box-container">
+                        <input type="text" id="global-search" class="search-input" placeholder="Search stocks..."
+                            oninput="applyFilters()">
+                    </div>
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                    <div class="update-indicator" id="update-indicator">
+                        <span class="status-dot"></span>
+                        <span id="update-time">Loading...</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Summary Stats -->
+            <div class="summary-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total Stocks</div>
+                    <div class="stat-value" id="total-stocks">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Filtered Results</div>
+                    <div class="stat-value" id="filtered-stocks">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg P/E</div>
+                    <div class="stat-value" id="avg-pe">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg Div Yield</div>
+                    <div class="stat-value" id="avg-div">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">🟢 Good</div>
+                    <div class="stat-value stat-good" id="count-good">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">🔴 Bad</div>
+                    <div class="stat-value stat-bad" id="count-bad">--</div>
+                </div>
+            </div>
+
+            <!-- View Controls -->
+            <div class="view-controls">
+                <div class="view-tabs">
+                    <button class="tab-btn active" data-view="table" onclick="switchView('table')">📋 Table
+                        View</button>
+                    <button class="tab-btn" data-view="charts" onclick="switchView('charts')">📊 Charts</button>
+                </div>
+                <div class="table-controls">
+                    <select id="sort-by" class="sort-select" onchange="sortStocks()">
+                        <option value="name">Sort by Name</option>
+                        <option value="price">Sort by Price</option>
+                        <option value="change">Sort by Change %</option>
+                        <option value="pe">Sort by P/E</option>
+                        <option value="pb">Sort by P/B</option>
+                        <option value="div">Sort by Div Yield</option>
+                        <option value="mcap">Sort by Market Cap</option>
+                        <option value="score">Sort by Score</option>
+                    </select>
+                    <button class="export-btn" onclick="exportToCSV()">📥 Export CSV</button>
+                </div>
+            </div>
+
+            <!-- Table View -->
+            <div id="table-view" class="data-view active">
+                <div class="table-container">
+                    <table class="stocks-table" id="stocks-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Stock Name</th>
+                                <th>Symbol</th>
+                                <th>Index</th>
+                                <th>Sector</th>
+                                <th>Sub-Sector</th>
+                                <th>Price (₹)</th>
+                                <th>Change %</th>
+                                <th>P/E</th>
+                                <th>P/B</th>
+                                <th>ROE %</th>
+                                <th>Div Yield %</th>
+                                <th>Market Cap (Cr)</th>
+                                <th>52W High</th>
+                                <th>52W Low</th>
+                                <th>Score</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stocks-tbody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Charts View -->
+            <div id="charts-view" class="data-view">
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3>Sector Distribution</h3>
+                        <div id="sector-chart" class="chart"></div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Market Cap Distribution</h3>
+                        <div id="mcap-chart" class="chart"></div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>P/E Ratio Distribution</h3>
+                        <div id="pe-chart" class="chart"></div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Performance Overview</h3>
+                        <div id="performance-chart" class="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Real-Time Stock Data Integration -->
+    <script src="stock_universe.js"></script>
+    <script src="yahoo_finance_api.js"></script>
+    <script src="screener_script_realtime.js"></script>
+</body>
+
+</html>
