@@ -46,16 +46,21 @@ async function loadStockData() {
         });
 
         // Add calculated fields
-        allStocks = realTimeStocks.map((stock, index) => ({
-            ...stock,
-            rank: index + 1,
-            score: calculateScore(stock),
-            // Use proper sector from stock universe
-            sector: stock.sector || 'Unknown',
-            industry: stock.industry || 'Unknown',
-            basicIndustry: stock.basicIndustry || 'Unknown',
-            index: selectedIndex
-        }));
+        allStocks = realTimeStocks.map((stock, index) => {
+            const enriched = {
+                ...stock,
+                rank: index + 1,
+                score: calculateScore(stock),
+                // Use proper sector from stock universe
+                sector: stock.sector || 'Unknown',
+                industry: stock.industry || 'Unknown',
+                basicIndustry: stock.basicIndustry || 'Unknown',
+                index: selectedIndex
+            };
+            Object.assign(enriched, calculateMomentum(enriched));
+            enriched.breakout = isBreakoutCandidate(enriched);
+            return enriched;
+        });
 
         filteredStocks = [...allStocks];
 
@@ -85,6 +90,8 @@ async function refreshPrices() {
                 stock.changePercent = newData.changePercent;
                 stock.volume = newData.volume;
                 stock.score = calculateScore(stock);
+                Object.assign(stock, calculateMomentum(stock));
+                stock.breakout = isBreakoutCandidate(stock);
             }
         });
 
@@ -96,6 +103,28 @@ async function refreshPrices() {
     } catch (error) {
         console.error('Error refreshing prices:', error);
     }
+}
+
+// % a stock has already run from its 52-week low, and how close it sits to its 52-week high
+function calculateMomentum(stock) {
+    const price = stock.price || 0;
+    const low = stock.low52w || price;
+    const high = stock.high52w || price;
+
+    return {
+        offLow52w: low > 0 ? ((price - low) / low) * 100 : 0,
+        nearHigh52w: high > 0 ? ((high - price) / high) * 100 : 0
+    };
+}
+
+// Flags small/micro-caps already up sharply from their low and still trading near their high —
+// the price profile multibagger small-caps (e.g. Cupid, STLTECH) showed mid-rally.
+// This describes current price action only; it is not a prediction of future returns.
+function isBreakoutCandidate(stock) {
+    const mcap = (stock.marketCap || 0) / 10000000; // Crores
+    return mcap > 0 && mcap <= 5000 &&
+        stock.offLow52w >= 50 &&
+        stock.nearHigh52w <= 15;
 }
 
 // Calculate composite score
@@ -192,6 +221,8 @@ function applyFilters() {
         roeMax: parseFloat(document.getElementById('roe-max').value) || Infinity,
         changeMin: parseFloat(document.getElementById('change-min').value) || -Infinity,
         changeMax: parseFloat(document.getElementById('change-max').value) || Infinity,
+        breakoutOffLowMin: parseFloat(document.getElementById('breakout-offlow-min').value) || 0,
+        breakoutNearHighMax: parseFloat(document.getElementById('breakout-nearhigh-max').value) || Infinity,
         statusGood: document.getElementById('status-good').checked,
         statusNeutral: document.getElementById('status-neutral').checked,
         statusBad: document.getElementById('status-bad').checked
@@ -219,6 +250,10 @@ function applyFilters() {
         if (stock.divYield && (stock.divYield < filters.divMin || stock.divYield > filters.divMax)) return false;
         if (stock.roe && (stock.roe < filters.roeMin || stock.roe > filters.roeMax)) return false;
         if (stock.changePercent < filters.changeMin || stock.changePercent > filters.changeMax) return false;
+
+        // Momentum / breakout filters
+        if ((stock.offLow52w || 0) < filters.breakoutOffLowMin) return false;
+        if ((stock.nearHigh52w ?? 100) > filters.breakoutNearHighMax) return false;
 
         // Status filter - only apply if at least one checkbox is checked
         if (filters.statusGood || filters.statusNeutral || filters.statusBad) {
@@ -326,6 +361,17 @@ function setChangeFilter(type) {
     applyFilters();
 }
 
+// Quick filter: small/micro-caps already running hard off their 52W low and still near their high.
+// Surfaces stocks with the price profile multibagger small-caps showed mid-rally — not a forecast.
+function setBreakoutFilter() {
+    document.getElementById('mcap-min').value = '';
+    document.getElementById('mcap-max').value = 5000;
+    document.getElementById('breakout-offlow-min').value = 50;
+    document.getElementById('breakout-nearhigh-max').value = 15;
+
+    applyFilters();
+}
+
 function resetAllFilters() {
     document.getElementById('global-search').value = '';
     document.getElementById('index-filter').value = '';
@@ -343,6 +389,8 @@ function resetAllFilters() {
     document.getElementById('roe-max').value = '';
     document.getElementById('change-min').value = '';
     document.getElementById('change-max').value = '';
+    document.getElementById('breakout-offlow-min').value = '';
+    document.getElementById('breakout-nearhigh-max').value = '';
     document.getElementById('status-good').checked = false;
     document.getElementById('status-neutral').checked = false;
     document.getElementById('status-bad').checked = false;
@@ -363,6 +411,7 @@ function sortStocks() {
             case 'pb': return (a.pb || 999) - (b.pb || 999);
             case 'div': return (b.divYield || 0) - (a.divYield || 0);
             case 'mcap': return (b.marketCap || 0) - (a.marketCap || 0);
+            case 'offlow': return (b.offLow52w || 0) - (a.offLow52w || 0);
             case 'score': return (b.score || 0) - (a.score || 0);
             default: return 0;
         }
@@ -394,7 +443,7 @@ function renderTableView() {
     tbody.innerHTML = '';
 
     if (filteredStocks.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="17" style="text-align: center; padding: 2rem;">No stocks found matching your filters</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="19" style="text-align: center; padding: 2rem;">No stocks found matching your filters</td></tr>';
         return;
     }
 
@@ -421,8 +470,10 @@ function renderTableView() {
             <td>₹${((stock.marketCap || 0) / 10000000).toFixed(0)} Cr</td>
             <td>₹${(stock.high52w || 0).toLocaleString('en-IN')}</td>
             <td>₹${(stock.low52w || 0).toLocaleString('en-IN')}</td>
+            <td class="${(stock.offLow52w || 0) >= 50 ? 'momentum-high' : ''}">${(stock.offLow52w || 0).toFixed(1)}%</td>
+            <td>${(stock.nearHigh52w || 0).toFixed(1)}%</td>
             <td><strong>${stock.score || 0}</strong></td>
-            <td><span class="status-badge status-${status}">${status === 'good' ? '🟢' : status === 'neutral' ? '🟡' : '🔴'} ${status.toUpperCase()}</span></td>
+            <td><span class="status-badge status-${status}">${status === 'good' ? '🟢' : status === 'neutral' ? '🟡' : '🔴'} ${status.toUpperCase()}</span>${stock.breakout ? ' <span class="status-badge badge-breakout">🚀 BREAKOUT</span>' : ''}</td>
         `;
 
         tbody.appendChild(row);
@@ -597,7 +648,7 @@ function updateTime() {
 
 // Export to CSV
 function exportToCSV() {
-    const headers = ['Rank', 'Name', 'Symbol', 'Index', 'Sector', 'Sub-Sector', 'Price', 'Change %', 'P/E', 'P/B', 'ROE %', 'Div Yield %', 'Market Cap (Cr)', '52W High', '52W Low', 'Score', 'Status'];
+    const headers = ['Rank', 'Name', 'Symbol', 'Index', 'Sector', 'Sub-Sector', 'Price', 'Change %', 'P/E', 'P/B', 'ROE %', 'Div Yield %', 'Market Cap (Cr)', '52W High', '52W Low', 'Off 52W Low %', 'Near 52W High %', 'Score', 'Status', 'Breakout'];
 
     const rows = filteredStocks.map(stock => [
         stock.rank,
@@ -615,8 +666,11 @@ function exportToCSV() {
         (stock.marketCap || 0) / 10000000,
         stock.high52w || 0,
         stock.low52w || 0,
+        (stock.offLow52w || 0).toFixed(1),
+        (stock.nearHigh52w || 0).toFixed(1),
         stock.score || 0,
-        getStatus(stock)
+        getStatus(stock),
+        stock.breakout ? 'YES' : 'NO'
     ]);
 
     const csv = [headers, ...rows].map(row => row.join(',')).join('\n');

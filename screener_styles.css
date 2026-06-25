@@ -460,6 +460,24 @@ body {
     color: #842029;
 }
 
+.badge-breakout {
+    background: #ffe5d0;
+    color: #7a3e00;
+    margin-left: 0.25rem;
+}
+
+.momentum-high {
+    color: #fd7e14;
+    font-weight: 700;
+}
+
+.filter-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-bottom: 0.6rem;
+}
+
 /* Card View */
 .cards-grid {
     display: grid;

@@ -115,6 +115,18 @@
             </div>
 
             <div class="filter-section">
+                <h3>🚀 Momentum / Breakout</h3>
+                <p class="filter-hint">Finds stocks already running hard off their 52-week low and still trading near their high — the price profile small-caps like Cupid or STLTECH showed mid-rally. Reads current price action only; it does not predict what moves next.</p>
+                <div class="range-inputs">
+                    <input type="number" id="breakout-offlow-min" placeholder="Min % off 52W Low" onchange="applyFilters()">
+                    <input type="number" id="breakout-nearhigh-max" placeholder="Max % below 52W High" onchange="applyFilters()">
+                </div>
+                <div class="quick-filters">
+                    <button onclick="setBreakoutFilter()">🚀 Breakout Candidates</button>
+                </div>
+            </div>
+
+            <div class="filter-section">
                 <h3>Performance</h3>
                 <div class="checkbox-group">
                     <label><input type="checkbox" id="status-good" onchange="applyFilters()"> 🟢 Good</label>
@@ -191,6 +203,7 @@
                         <option value="pb">Sort by P/B</option>
                         <option value="div">Sort by Div Yield</option>
                         <option value="mcap">Sort by Market Cap</option>
+                        <option value="offlow">Sort by Off 52W Low %</option>
                         <option value="score">Sort by Score</option>
                     </select>
                     <button class="export-btn" onclick="exportToCSV()">📥 Export CSV</button>
@@ -218,6 +231,8 @@
                                 <th>Market Cap (Cr)</th>
                                 <th>52W High</th>
                                 <th>52W Low</th>
+                                <th>Off 52W Low %</th>
+                                <th>Near 52W High %</th>
                                 <th>Score</th>
                                 <th>Status</th>
                             </tr>
