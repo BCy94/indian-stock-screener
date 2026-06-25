@@ -8,6 +8,15 @@ let currentSort = 'name';
 let yahooAPI = null;
 let loadingManager = null;
 
+// Tracks where the data on screen came from so the UI can be honest about it:
+// 'live' = just fetched, 'stale' = live fetch failed but we still have an earlier live load,
+// 'cached' = loaded from localStorage from a previous session, 'none' = nothing available at all.
+// Exposed on window (not `let`) so it's a real global other scripts/devtools/tests can read.
+window.dataSource = 'none';
+let lastUpdateTimestamp = null;
+
+const CACHE_KEY_PREFIX = 'screenerCache_v1_';
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize API and loading manager
@@ -17,69 +26,129 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Add sector change listener for cascading sub-sectors
     document.getElementById('sector-filter').addEventListener('change', updateSubSectorFilter);
 
+    // Keep working offline: fall back to cached data when the network drops,
+    // and try a live refresh automatically the moment the browser reports it's back.
+    window.addEventListener('online', () => refreshPrices());
+    window.addEventListener('offline', () => {
+        if (dataSource === 'live') dataSource = 'stale';
+        updateConnectionStatus();
+    });
+
     // Load stock data
     await loadStockData();
-
-    populateSectorFilters();
-    renderStocks();
-    updateStats();
-    updateTime();
 
     // Start auto-refresh (every 5 minutes)
     setInterval(() => refreshPrices(), 5 * 60 * 1000);
 });
 
-// Load stock data with real-time prices
+// Add calculated fields shared by both live and cached data
+function enrichStocks(rawStocks, selectedIndex) {
+    return rawStocks.map((stock, index) => {
+        const enriched = {
+            ...stock,
+            rank: index + 1,
+            score: calculateScore(stock),
+            // Use proper sector from stock universe
+            sector: stock.sector || 'Unknown',
+            industry: stock.industry || 'Unknown',
+            basicIndustry: stock.basicIndustry || 'Unknown',
+            index: selectedIndex
+        };
+        Object.assign(enriched, calculateMomentum(enriched));
+        enriched.breakout = isBreakoutCandidate(enriched);
+        return enriched;
+    });
+}
+
+// Offline cache: keeps the last successful live load in localStorage so the
+// screener still works (read-only, on whatever was last fetched) without a
+// network connection — including when opened directly as a file://.
+function saveStockCache(indexKey, stocks) {
+    try {
+        localStorage.setItem(CACHE_KEY_PREFIX + indexKey, JSON.stringify({
+            stocks,
+            timestamp: Date.now()
+        }));
+    } catch (error) {
+        console.warn('Could not save offline cache:', error);
+    }
+}
+
+function loadStockCache(indexKey) {
+    try {
+        const raw = localStorage.getItem(CACHE_KEY_PREFIX + indexKey);
+        return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+        console.warn('Could not read offline cache:', error);
+        return null;
+    }
+}
+
+// Load stock data with real-time prices, falling back to cached/offline data when unavailable
 async function loadStockData() {
+    const selectedIndex = document.getElementById('index-filter')?.value || 'NIFTY50';
+    let stockList = STOCK_UNIVERSE[selectedIndex] || STOCK_UNIVERSE.NIFTY50;
+
     try {
         loadingManager.show('Loading stock data from Yahoo Finance...');
-
-        // Get selected index or default to Nifty 50
-        const selectedIndex = document.getElementById('index-filter')?.value || 'NIFTY50';
-
-        // Get stock list for selected index
-        let stockList = STOCK_UNIVERSE[selectedIndex] || STOCK_UNIVERSE.NIFTY50;
 
         // Fetch real-time data
         const realTimeStocks = await yahooAPI.fetchIndexStocks(stockList, (progress, current, total) => {
             loadingManager.updateProgress(progress, current, total);
         });
 
-        // Add calculated fields
-        allStocks = realTimeStocks.map((stock, index) => {
-            const enriched = {
-                ...stock,
-                rank: index + 1,
-                score: calculateScore(stock),
-                // Use proper sector from stock universe
-                sector: stock.sector || 'Unknown',
-                industry: stock.industry || 'Unknown',
-                basicIndustry: stock.basicIndustry || 'Unknown',
-                index: selectedIndex
-            };
-            Object.assign(enriched, calculateMomentum(enriched));
-            enriched.breakout = isBreakoutCandidate(enriched);
-            return enriched;
-        });
+        if (!realTimeStocks || realTimeStocks.length === 0) {
+            throw new Error('No live data returned');
+        }
 
+        allStocks = enrichStocks(realTimeStocks, selectedIndex);
         filteredStocks = [...allStocks];
+        dataSource = 'live';
+        lastUpdateTimestamp = Date.now();
+        saveStockCache(selectedIndex, allStocks);
 
-        loadingManager.hide();
-
-        console.log(`Loaded ${allStocks.length} stocks for ${selectedIndex}`);
+        console.log(`Loaded ${allStocks.length} stocks for ${selectedIndex} (live)`);
     } catch (error) {
-        console.error('Error loading stock data:', error);
+        console.warn('Live data unavailable, falling back to offline cache:', error.message);
+
+        const cached = loadStockCache(selectedIndex);
+        if (cached && cached.stocks?.length) {
+            allStocks = enrichStocks(cached.stocks, selectedIndex);
+            filteredStocks = [...allStocks];
+            dataSource = 'cached';
+            lastUpdateTimestamp = cached.timestamp;
+            console.log(`Loaded ${allStocks.length} stocks for ${selectedIndex} (offline cache)`);
+        } else {
+            allStocks = [];
+            filteredStocks = [];
+            dataSource = 'none';
+            lastUpdateTimestamp = null;
+        }
+    } finally {
         loadingManager.hide();
-        alert('Error loading stock data. Please refresh the page.');
+        populateSectorFilters();
+        renderStocks();
+        updateStats();
+        updateConnectionStatus();
     }
 }
 
 // Refresh prices only (faster than full reload)
 async function refreshPrices() {
+    if (allStocks.length === 0) {
+        // Nothing loaded yet (e.g. first run offline) — try a full load instead
+        await loadStockData();
+        return;
+    }
+
     try {
         console.log('Refreshing prices...');
         const symbols = allStocks.map(s => s.symbol);
         const priceData = await yahooAPI.fetchMultipleStocks(symbols);
+
+        if (!priceData || priceData.length === 0) {
+            throw new Error('No live data returned');
+        }
 
         // Update prices in allStocks
         priceData.forEach(newData => {
@@ -95,13 +164,20 @@ async function refreshPrices() {
             }
         });
 
+        dataSource = 'live';
+        lastUpdateTimestamp = Date.now();
+        const selectedIndex = document.getElementById('index-filter')?.value || 'NIFTY50';
+        saveStockCache(selectedIndex, allStocks);
+
         // Re-apply filters and render
         applyFilters();
-        updateTime();
+        updateConnectionStatus();
 
         console.log('Prices refreshed successfully');
     } catch (error) {
-        console.error('Error refreshing prices:', error);
+        console.warn('Refresh failed, staying on last known data:', error.message);
+        if (dataSource === 'live') dataSource = 'stale';
+        updateConnectionStatus();
     }
 }
 
@@ -443,7 +519,10 @@ function renderTableView() {
     tbody.innerHTML = '';
 
     if (filteredStocks.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="19" style="text-align: center; padding: 2rem;">No stocks found matching your filters</td></tr>';
+        const message = allStocks.length === 0
+            ? 'No stock data available. Check your connection and use the Retry button above.'
+            : 'No stocks found matching your filters';
+        tbody.innerHTML = `<tr><td colspan="19" style="text-align: center; padding: 2rem;">${message}</td></tr>`;
         return;
     }
 
@@ -640,10 +719,51 @@ function updateStats() {
     }
 }
 
-// Update time
-function updateTime() {
-    const now = new Date();
-    document.getElementById('update-time').textContent = `Updated: ${now.toLocaleTimeString()}`;
+// Update the connection status dot/text and the offline banner to honestly
+// reflect where the data on screen came from (live / cached / unavailable)
+function updateConnectionStatus() {
+    const dot = document.querySelector('.status-dot');
+    const text = document.getElementById('update-time');
+    const banner = document.getElementById('connection-banner');
+    const bannerText = document.getElementById('connection-banner-text');
+    const isFileProtocol = location.protocol === 'file:';
+    const stamp = lastUpdateTimestamp ? new Date(lastUpdateTimestamp).toLocaleString() : null;
+
+    dot.classList.remove('status-dot-offline', 'status-dot-error');
+    banner.classList.remove('error');
+    banner.style.display = 'none';
+
+    if (dataSource === 'live') {
+        text.textContent = `Updated: ${new Date(lastUpdateTimestamp).toLocaleTimeString()}`;
+        return;
+    }
+
+    if (dataSource === 'stale') {
+        dot.classList.add('status-dot-offline');
+        text.textContent = `Offline — last live update ${stamp}`;
+        bannerText.textContent = `📴 You're offline. Showing the last live data from ${stamp}.`;
+        banner.style.display = 'flex';
+        return;
+    }
+
+    if (dataSource === 'cached') {
+        dot.classList.add('status-dot-offline');
+        text.textContent = `Offline — cached ${stamp}`;
+        bannerText.textContent = isFileProtocol
+            ? `📴 Opened as a local file, so live prices aren't reachable here. Showing data cached on this device from ${stamp}.`
+            : `📴 No internet connection. Showing data cached on this device from ${stamp}.`;
+        banner.style.display = 'flex';
+        return;
+    }
+
+    // dataSource === 'none'
+    dot.classList.add('status-dot-error');
+    text.textContent = 'No data available';
+    banner.classList.add('error');
+    bannerText.textContent = isFileProtocol
+        ? `⚠️ Opened as a local file — live prices need this to be served over http/https. Visit the hosted version once to cache data for offline use here, or run a local server (see README).`
+        : `⚠️ No internet connection and no cached data yet. Connect once to load live data — it'll then stay available offline.`;
+    banner.style.display = 'flex';
 }
 
 // Export to CSV

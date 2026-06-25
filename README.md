@@ -14,6 +14,7 @@ A professional, real-time stock screener for Indian markets with data from Yahoo
 - **Multiple Views**: Table view and interactive charts
 - **Dark Mode**: Toggle between light and dark themes
 - **Auto-Refresh**: Prices update automatically every 5 minutes
+- **Offline-Capable**: Caches the last successful price load in your browser, so the screener keeps working (read-only) without internet — open it anywhere, anytime, including straight from a local file
 - **Performance Indicators**: Good/Neutral/Bad status for each stock
 - **CSV Export**: Download filtered results
 - **Responsive Design**: Works on desktop and mobile
@@ -63,7 +64,7 @@ python3 -m http.server 8000
 open http://localhost:8000
 ```
 
-**Note**: Opening `index.html` directly won't work due to CORS restrictions. You must use a local server.
+**Note**: For live, real-time prices, serve this over HTTP/HTTPS (a local server, or any static host) — browsers block direct `fetch()` calls to Yahoo Finance from `file://` pages. Opening `index.html` directly still works, but shows only whatever was last cached on that device (see Offline Support below) until you load it once over HTTP/HTTPS.
 
 ## 📖 Usage
 
@@ -100,6 +101,15 @@ Uses official NSE 4-tier classification:
 
 Stock prices automatically refresh every 5 minutes to keep data current.
 
+## 📴 Offline Support
+
+The screener caches the last successful price load in your browser's local storage:
+
+- Load it once online (hosted, or via a local server) and it keeps working offline after that — close the tab, lose your connection, or open the same `index.html` file directly later, and your last data is still there.
+- A banner at the top of the page appears whenever you're viewing cached/offline data instead of live prices, and shows how old that data is.
+- Going back online automatically triggers a fresh live refresh.
+- If there's no cached data yet and no connection (e.g. the very first time you open it with no internet), you'll see a clear message instead of a blank screen — connect once, then click Retry.
+
 ## 🌙 Dark Mode
 
 Toggle between light and dark themes. Preference is saved in browser.
@@ -114,7 +124,7 @@ Optimized for:
 
 ## 🐛 Known Issues
 
-- **CORS**: Must be served via HTTP/HTTPS (not file://)
+- **Live prices need HTTP/HTTPS**: browsers block this app's `fetch()` calls to Yahoo Finance from a `file://` page (a built-in browser restriction, not specific to this app). Opening `index.html` directly still works — it just falls back to the last cached data on that device instead of live prices.
 - **Rate Limiting**: Yahoo Finance may limit requests if too frequent
 - **Data Accuracy**: Prices are indicative, verify before trading
 
