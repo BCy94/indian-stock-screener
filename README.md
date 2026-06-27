@@ -105,7 +105,7 @@ Stock prices automatically refresh every 5 minutes to keep data current.
 
 The screener caches the last successful price load in your browser's local storage:
 
-- Load it once online (hosted, or via a local server) and it keeps working offline after that — close the tab, lose your connection, or open the same `index.html` file directly later, and your last data is still there.
+- Load it once over http/https (hosted, or via a local server) and it keeps working offline after that at that same address — close the tab, lose your connection, or reopen later, and your last data is still there. Browser storage is isolated per origin, so this doesn't carry over to double-clicking the HTML file directly (see Known Issues).
 - A banner at the top of the page appears whenever you're viewing cached/offline data instead of live prices, and shows how old that data is.
 - Going back online automatically triggers a fresh live refresh.
 - If there's no cached data yet and no connection (e.g. the very first time you open it with no internet), you'll see a clear message instead of a blank screen — connect once, then click Retry.
@@ -124,7 +124,7 @@ Optimized for:
 
 ## 🐛 Known Issues
 
-- **Live prices need HTTP/HTTPS**: browsers block this app's `fetch()` calls to Yahoo Finance from a `file://` page (a built-in browser restriction, not specific to this app). Opening `index.html` directly still works — it just falls back to the last cached data on that device instead of live prices.
+- **Live prices need HTTP/HTTPS**: browsers block this app's `fetch()` calls to Yahoo Finance from a `file://` page (a built-in browser restriction, not specific to this app). `file://` is also its own storage origin, separate from any `http(s)://` address, so it can't inherit a cache saved while served over HTTP/HTTPS either. Opening `index.html` directly still works, but shows "no data available" on a fresh profile, since a `file://` page starts with no cache of its own and can never fetch live data to fill it — for live prices and durable offline caching, serve it over a local server or use the hosted version instead.
 - **Rate Limiting**: Yahoo Finance may limit requests if too frequent
 - **Data Accuracy**: Prices are indicative, verify before trading
 

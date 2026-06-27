@@ -761,7 +761,7 @@ function updateConnectionStatus() {
     text.textContent = 'No data available';
     banner.classList.add('error');
     bannerText.textContent = isFileProtocol
-        ? `⚠️ Opened as a local file — live prices need this to be served over http/https. Visit the hosted version once to cache data for offline use here, or run a local server (see README).`
+        ? `⚠️ Opened as a local file — live prices need this to be served over http/https, and this view can't reuse data cached by the hosted site (browser storage is separate per origin). Run a local server (see README) or use the hosted version directly to get live data.`
         : `⚠️ No internet connection and no cached data yet. Connect once to load live data — it'll then stay available offline.`;
     banner.style.display = 'flex';
 }
