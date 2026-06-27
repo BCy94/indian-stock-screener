@@ -21,7 +21,7 @@ A professional, real-time stock screener for Indian markets with data from Yahoo
 
 ## 🚀 Live Demo
 
-Visit: `https://YOUR_USERNAME.github.io/indian-stock-screener/`
+Visit: `https://bcy94.github.io/indian-stock-screener/` (requires GitHub Pages to be enabled for this repo — see Local Development below for running it yourself in the meantime)
 
 ## 📊 Stock Data
 
