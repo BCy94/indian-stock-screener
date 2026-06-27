@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact — So Called Investor</title>
-<meta name="description" content="Get in touch with So Called Investor for course questions, partnerships or support.">
+<title>SIP &amp; Lumpsum Calculator — So Called Investor</title>
+<meta name="description" content="A free, fast SIP and lumpsum investment calculator for Indian investors. Project your wealth growth instantly — no signup, no spreadsheet.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><rect width=%2224%22 height=%2224%22 rx=%226%22 fill=%22%23C9A24B%22/><path d=%22M4 16L9 11L13 15L20 7%22 stroke=%22%2314171F%22 stroke-width=%222.4%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -50,63 +50,87 @@
 
 <header class="page-hero">
   <div class="container">
-    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span>Contact</span></div>
-    <div class="eyebrow center" style="margin:0 auto;"><span class="dot"></span> We reply within 24 hours</div>
-    <h1>Let's <span class="text-accent">talk</span></h1>
-    <p>Questions about a course, a partnership idea, or feedback on the site — we'd love to hear from you.</p>
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span>Calculator</span></div>
+    <div class="eyebrow center" style="margin:0 auto;"><span class="dot"></span> Free Tool</div>
+    <h1 style="max-width:680px;margin:18px auto;">Plan Your Investments Before You Make Them</h1>
+    <p style="max-width:560px;margin:0 auto;">Project the future value of a monthly SIP or a one-time lumpsum investment. Adjust the numbers and watch the outcome change in real time.</p>
   </div>
 </header>
 
 <section class="section section--tight">
-  <div class="container contact-grid">
-
-    <div class="reveal">
-      <div class="contact-info-item glass" style="padding:24px; border-radius:var(--radius-lg); border:1px solid var(--surface-border); margin-bottom:16px;">
-        <span class="feature-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M3.5 6.5L12 13l8.5-6.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <div><h4>Email</h4><p>hello@socalledinvestor.com</p></div>
-      </div>
-      <div class="contact-info-item glass" style="padding:24px; border-radius:var(--radius-lg); border:1px solid var(--surface-border); margin-bottom:16px;">
-        <span class="feature-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M21 12a8 8 0 10-3.5 6.6L21 20l-1-3.6A8 8 0 0021 12z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
-        <div><h4>Community</h4><p>Telegram &amp; Discord links coming soon</p></div>
-      </div>
-      <div class="contact-info-item glass" style="padding:24px; border-radius:var(--radius-lg); border:1px solid var(--surface-border);">
-        <span class="feature-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.6 7-11.5A7 7 0 005 9.5C5 14.4 12 21 12 21z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.3" stroke="currentColor" stroke-width="2"/></svg></span>
-        <div><h4>Based in</h4><p>India · Serving investors nationwide</p></div>
+  <div class="container" style="max-width:980px;" data-calculator>
+    <div class="center" style="margin-bottom:32px;">
+      <div class="calc-tabs">
+        <button class="active" data-calc-mode="sip">SIP</button>
+        <button data-calc-mode="lumpsum">Lumpsum</button>
       </div>
     </div>
+    <div class="calc-layout">
 
-    <div class="glass reveal" style="padding:40px;">
-      <h3 style="margin-bottom:6px;">Send us a message</h3>
-      <p class="muted" style="margin-bottom:24px; font-size:14.5px;">This form doesn't send anywhere yet — it's a UI placeholder until the backend is connected.</p>
-      <form data-placeholder-form>
-        <div class="form-grid">
-          <div class="form-field">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" placeholder="Your name" required>
+      <div class="calc-panel glass">
+        <div class="calc-field" data-calc-mode-field="sip">
+          <div class="calc-field-head">
+            <label>Monthly Investment</label>
+            <span>₹<input type="number" class="calc-val-input" data-calc-input="amount" value="10000"></span>
           </div>
-          <div class="form-field">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" placeholder="you@email.com" required>
-          </div>
-          <div class="form-field full">
-            <label for="subject">Subject</label>
-            <select id="subject">
-              <option>Course Question</option>
-              <option>Partnership / Collaboration</option>
-              <option>Feedback on the Website</option>
-              <option>Something Else</option>
-            </select>
-          </div>
-          <div class="form-field full">
-            <label for="message">Message</label>
-            <textarea id="message" placeholder="How can we help?" required></textarea>
-          </div>
+          <input type="range" class="calc-slider" data-calc-slider="amount" min="500" max="100000" step="500" value="10000">
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
-        <div class="form-msg" data-success="Thanks for reaching out! We'll reply within 24 hours. 🎉"></div>
-      </form>
-    </div>
 
+        <div class="calc-field" data-calc-mode-field="lumpsum" hidden>
+          <div class="calc-field-head">
+            <label>Lumpsum Amount</label>
+            <span>₹<input type="number" class="calc-val-input" data-calc-input="lumpsum" value="100000"></span>
+          </div>
+          <input type="range" class="calc-slider" data-calc-slider="lumpsum" min="5000" max="5000000" step="5000" value="100000">
+        </div>
+
+        <div class="calc-field">
+          <div class="calc-field-head">
+            <label>Expected Return (p.a.)</label>
+            <span><input type="number" class="calc-val-input" data-calc-input="rate" value="12">%</span>
+          </div>
+          <input type="range" class="calc-slider" data-calc-slider="rate" min="1" max="30" step="0.5" value="12">
+        </div>
+
+        <div class="calc-field">
+          <div class="calc-field-head">
+            <label>Time Period</label>
+            <span><input type="number" class="calc-val-input" data-calc-input="years" value="10">yrs</span>
+          </div>
+          <input type="range" class="calc-slider" data-calc-slider="years" min="1" max="35" step="1" value="10">
+        </div>
+      </div>
+
+      <div class="calc-results glass">
+        <div class="calc-total">
+          <div class="label">Total Value</div>
+          <div class="amount" data-calc-out="total">₹0</div>
+        </div>
+        <div class="calc-breakdown">
+          <div class="calc-row">
+            <span><span class="swatch invested"></span> Invested Amount</span>
+            <b data-calc-out="invested">₹0</b>
+          </div>
+          <div class="calc-row">
+            <span><span class="swatch returns"></span> Est. Returns</span>
+            <b data-calc-out="returns">₹0</b>
+          </div>
+          <div class="calc-bar"><span data-calc-out="bar" style="width:0%"></span></div>
+        </div>
+        <svg class="calc-chart" data-calc-out="chart" viewBox="0 0 300 140" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="calcChartFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#C9A24B" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#C9A24B" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path class="fill" fill="url(#calcChartFill)" d=""/>
+          <path class="line" d=""/>
+        </svg>
+      </div>
+
+    </div>
+    <p class="muted" style="text-align:center;font-size:13px;margin-top:20px;">Assumes a constant annual rate of return, compounded monthly. Actual market returns vary — this is an educational projection, not a guarantee.</p>
   </div>
 </section>
 
@@ -114,20 +138,36 @@
   <div class="container" style="max-width:760px;">
     <div class="section-head reveal">
       <div class="eyebrow"><span class="dot"></span> FAQ</div>
-      <h2>Before you write in</h2>
+      <h2>Before you run the numbers</h2>
     </div>
     <div class="reveal">
       <div class="accordion-item open">
-        <button class="accordion-head">Do you offer personalised investment advice? <span class="plus">+</span></button>
-        <div class="accordion-body" style="max-height:200px;"><p>No — we are an education platform, not a SEBI-registered advisory. All content is for learning purposes only.</p></div>
+        <button class="accordion-head">What's the difference between SIP and Lumpsum? <span class="plus">+</span></button>
+        <div class="accordion-body" style="max-height:200px;"><p>SIP spreads a fixed amount across monthly investments, averaging your purchase cost over time. Lumpsum puts the full amount in on day one, so it benefits the most from a long runway of compounding but carries more timing risk.</p></div>
       </div>
       <div class="accordion-item">
-        <button class="accordion-head">Can I get a refund on a course? <span class="plus">+</span></button>
-        <div class="accordion-body"><p>Our refund policy will be published alongside checkout when payments go live. Reach out and we'll sort it case-by-case for now.</p></div>
+        <button class="accordion-head">What return rate should I assume? <span class="plus">+</span></button>
+        <div class="accordion-body"><p>Indian equity markets have historically delivered long-term returns in the 10-14% range, though this varies by period and is never guaranteed. Use a conservative rate if you're planning around the number.</p></div>
       </div>
       <div class="accordion-item">
-        <button class="accordion-head">Do you do collaborations or guest posts? <span class="plus">+</span></button>
-        <div class="accordion-body"><p>Yes — select Partnership / Collaboration in the form above and tell us a bit about your idea.</p></div>
+        <button class="accordion-head">Does this account for inflation or taxes? <span class="plus">+</span></button>
+        <div class="accordion-body"><p>No — this is a pre-tax, nominal projection. Actual take-home returns will be lower after capital gains tax and inflation are factored in.</p></div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-head">Is this investment advice? <span class="plus">+</span></button>
+        <div class="accordion-body"><p>No. All content is for educational purposes only. Please do your own research or consult a SEBI-registered advisor before investing.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="cta-band glass reveal">
+      <h2>Want to know how to act on these numbers?</h2>
+      <p>The calculator tells you where compounding can take you. Our courses teach you how to pick what to actually put in it.</p>
+      <div class="hero-actions" style="justify-content:center;">
+        <a href="courses.html" class="btn btn-primary">Browse Courses</a>
       </div>
     </div>
   </div>
