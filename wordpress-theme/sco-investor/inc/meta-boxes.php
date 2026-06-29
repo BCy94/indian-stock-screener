@@ -23,6 +23,7 @@ function sci_render_course_meta_box($post) {
 	$lessons        = get_post_meta($post->ID, '_sci_lesson_count', true);
 	$badge          = get_post_meta($post->ID, '_sci_badge', true);
 	$level_label    = get_post_meta($post->ID, '_sci_level_label', true);
+	$linked_product = (int) get_post_meta($post->ID, '_sci_product_id', true);
 	?>
 	<table class="form-table">
 		<tr>
@@ -58,6 +59,22 @@ function sci_render_course_meta_box($post) {
 				<p class="description"><?php esc_html_e('Optional. Leave blank to show no badge.', 'sco-investor'); ?></p>
 			</td>
 		</tr>
+		<tr>
+			<th><label for="sci_product_id"><?php esc_html_e('Linked Product (WooCommerce)', 'sco-investor'); ?></label></th>
+			<td>
+				<?php if (sci_has_woocommerce()) : ?>
+					<select id="sci_product_id" name="sci_product_id">
+						<option value="0"><?php esc_html_e('— None (no payment required) —', 'sco-investor'); ?></option>
+						<?php foreach (sci_get_products_for_select() as $product_id => $product_label) : ?>
+							<option value="<?php echo esc_attr($product_id); ?>" <?php selected($linked_product, $product_id); ?>><?php echo esc_html($product_label); ?></option>
+						<?php endforeach; ?>
+					</select>
+					<p class="description"><?php esc_html_e('Selling this course? Link it to a WooCommerce product to show a real Buy Now button and unlock content automatically on purchase.', 'sco-investor'); ?></p>
+				<?php else : ?>
+					<p class="description"><?php esc_html_e('Install and activate WooCommerce to sell this course with a real payment gateway (Razorpay, Stripe, PayPal, etc.).', 'sco-investor'); ?></p>
+				<?php endif; ?>
+			</td>
+		</tr>
 	</table>
 	<p class="description"><?php esc_html_e('Set the Course Level(s) from the box in the sidebar.', 'sco-investor'); ?></p>
 	<?php
@@ -70,6 +87,9 @@ function sci_render_material_meta_box($post) {
 	$file_id       = (int) get_post_meta($post->ID, '_sci_file', true);
 	$external_url  = get_post_meta($post->ID, '_sci_external_url', true);
 	$badge         = get_post_meta($post->ID, '_sci_badge', true);
+	$price         = get_post_meta($post->ID, '_sci_price', true);
+	$price_original = get_post_meta($post->ID, '_sci_price_original', true);
+	$linked_product = (int) get_post_meta($post->ID, '_sci_product_id', true);
 	$file_name     = $file_id ? basename(get_attached_file($file_id)) : '';
 	?>
 	<table class="form-table">
@@ -82,6 +102,20 @@ function sci_render_material_meta_box($post) {
 					<?php endforeach; ?>
 				</select>
 				<p class="description"><?php esc_html_e('Controls the icon and default badge shown on the card.', 'sco-investor'); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th><label for="sci_price"><?php esc_html_e('Price (₹)', 'sco-investor'); ?></label></th>
+			<td>
+				<input type="number" step="0.01" min="0" id="sci_price" name="sci_price" value="<?php echo esc_attr($price); ?>" class="regular-text">
+				<p class="description"><?php esc_html_e('Optional. Leave blank to keep this a free download.', 'sco-investor'); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th><label for="sci_price_original"><?php esc_html_e('Original Price (₹)', 'sco-investor'); ?></label></th>
+			<td>
+				<input type="number" step="0.01" min="0" id="sci_price_original" name="sci_price_original" value="<?php echo esc_attr($price_original); ?>" class="regular-text">
+				<p class="description"><?php esc_html_e('Optional. Shown struck through next to the price, e.g. for a discount.', 'sco-investor'); ?></p>
 			</td>
 		</tr>
 		<tr>
@@ -105,6 +139,22 @@ function sci_render_material_meta_box($post) {
 			<td>
 				<input type="text" id="sci_badge" name="sci_badge" value="<?php echo esc_attr($badge); ?>" class="regular-text" placeholder="<?php esc_attr_e('e.g. PDF · 6 pages', 'sco-investor'); ?>">
 				<p class="description"><?php esc_html_e('Optional. Leave blank to use the Material Type label as the badge.', 'sco-investor'); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th><label for="sci_product_id"><?php esc_html_e('Linked Product (WooCommerce)', 'sco-investor'); ?></label></th>
+			<td>
+				<?php if (sci_has_woocommerce()) : ?>
+					<select id="sci_product_id" name="sci_product_id">
+						<option value="0"><?php esc_html_e('— None (free download) —', 'sco-investor'); ?></option>
+						<?php foreach (sci_get_products_for_select() as $product_id => $product_label) : ?>
+							<option value="<?php echo esc_attr($product_id); ?>" <?php selected($linked_product, $product_id); ?>><?php echo esc_html($product_label); ?></option>
+						<?php endforeach; ?>
+					</select>
+					<p class="description"><?php esc_html_e('Selling this material? Link it to a WooCommerce product to show a real Buy Now button and gate the file/link until purchase.', 'sco-investor'); ?></p>
+				<?php else : ?>
+					<p class="description"><?php esc_html_e('Install and activate WooCommerce to sell this with a real payment gateway (Razorpay, Stripe, PayPal, etc.).', 'sco-investor'); ?></p>
+				<?php endif; ?>
 			</td>
 		</tr>
 	</table>
@@ -176,6 +226,9 @@ function sci_save_course_meta($post_id) {
 	if (isset($_POST['sci_badge'])) {
 		update_post_meta($post_id, '_sci_badge', sanitize_text_field(wp_unslash($_POST['sci_badge'])));
 	}
+	if (isset($_POST['sci_product_id'])) {
+		update_post_meta($post_id, '_sci_product_id', absint($_POST['sci_product_id']));
+	}
 }
 add_action('save_post_course', 'sci_save_course_meta');
 
@@ -188,6 +241,14 @@ function sci_save_material_meta($post_id) {
 		$type = sanitize_text_field(wp_unslash($_POST['sci_material_type']));
 		update_post_meta($post_id, '_sci_material_type', array_key_exists($type, sci_material_types()) ? $type : 'other');
 	}
+	if (isset($_POST['sci_price'])) {
+		$value = sanitize_text_field(wp_unslash($_POST['sci_price']));
+		update_post_meta($post_id, '_sci_price', $value === '' ? '' : round((float) $value, 2));
+	}
+	if (isset($_POST['sci_price_original'])) {
+		$value = sanitize_text_field(wp_unslash($_POST['sci_price_original']));
+		update_post_meta($post_id, '_sci_price_original', $value === '' ? '' : round((float) $value, 2));
+	}
 	if (isset($_POST['sci_file'])) {
 		update_post_meta($post_id, '_sci_file', absint($_POST['sci_file']));
 	}
@@ -196,6 +257,9 @@ function sci_save_material_meta($post_id) {
 	}
 	if (isset($_POST['sci_badge'])) {
 		update_post_meta($post_id, '_sci_badge', sanitize_text_field(wp_unslash($_POST['sci_badge'])));
+	}
+	if (isset($_POST['sci_product_id'])) {
+		update_post_meta($post_id, '_sci_product_id', absint($_POST['sci_product_id']));
 	}
 }
 add_action('save_post_material', 'sci_save_material_meta');

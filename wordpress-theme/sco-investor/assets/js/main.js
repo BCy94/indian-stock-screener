@@ -112,34 +112,6 @@
     counters.forEach(function (el) { countIo.observe(el); });
   }
 
-  /* ---------- Stock ticker tape ---------- */
-  var TICKER_STOCKS = [
-    ['RELIANCE', 2954.10, 1.24], ['TCS', 4102.55, -0.42], ['HDFCBANK', 1687.30, 0.85],
-    ['INFY', 1842.75, 1.63], ['ICICIBANK', 1264.90, -0.31], ['HINDUNILVR', 2398.20, 0.18],
-    ['SBIN', 832.45, 2.05], ['BHARTIARTL', 1598.60, 0.97], ['ITC', 468.35, -0.56],
-    ['LT', 3712.80, 1.12], ['KOTAKBANK', 1789.15, -0.22], ['AXISBANK', 1142.50, 0.64],
-    ['BAJFINANCE', 7245.90, 1.88], ['MARUTI', 12480.25, -0.71], ['ASIANPAINT', 2865.40, 0.39],
-    ['SUNPHARMA', 1789.60, 1.04], ['TITAN', 3542.15, -0.18], ['WIPRO', 562.80, 0.93],
-    ['ONGC', 268.45, -0.85], ['TATAMOTORS', 968.20, 2.41]
-  ];
-
-  function buildTicker() {
-    var track = document.querySelector('.ticker-track');
-    if (!track) return;
-    var html = '';
-    var doubled = TICKER_STOCKS.concat(TICKER_STOCKS);
-    doubled.forEach(function (s) {
-      var up = s[2] >= 0;
-      html += '<div class="ticker-item">' +
-        '<span class="sym">' + s[0] + '</span>' +
-        '<span>₹' + s[1].toLocaleString('en-IN', { minimumFractionDigits: 2 }) + '</span>' +
-        '<span class="chg ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(s[2]).toFixed(2) + '%</span>' +
-        '</div>';
-    });
-    track.innerHTML = html;
-  }
-  buildTicker();
-
   /* ---------- Filter pills (courses/materials) ---------- */
   var filterRow = document.querySelector('.filter-row');
   if (filterRow) {

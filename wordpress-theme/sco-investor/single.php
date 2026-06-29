@@ -32,9 +32,10 @@ while (have_posts()) : the_post();
 
 <section class="section section--tight">
 	<div class="container">
-		<div class="post-layout">
+		<div class="post-layout<?php echo sci_show('sci_blog_show_sidebar') ? '' : ' post-layout--no-sidebar'; ?>">
 
 			<article>
+				<?php if (sci_show('sci_blog_show_featured_image')) : ?>
 				<div class="post-cover glass flex-center">
 					<?php if (has_post_thumbnail()) : ?>
 						<?php the_post_thumbnail('large'); ?>
@@ -42,6 +43,7 @@ while (have_posts()) : the_post();
 						<svg viewBox="0 0 24 24" fill="none" style="color:var(--accent);"><path d="M4 19h16M7 19V9M12 19V5M17 19v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
 					<?php endif; ?>
 				</div>
+				<?php endif; ?>
 
 				<div class="post-content reveal">
 					<?php the_content(); ?>
@@ -77,7 +79,9 @@ while (have_posts()) : the_post();
 				<?php comments_template(); ?>
 			</article>
 
+			<?php if (sci_show('sci_blog_show_sidebar')) : ?>
 			<aside class="post-sidebar">
+				<?php if (sci_show('sci_blog_show_author_box')) : ?>
 				<div class="widget glass author-box">
 					<span class="avatar-ring" style="width:52px;height:52px;font-size:17px;"><?php echo esc_html(sci_initials(get_the_author())); ?></span>
 					<div>
@@ -85,6 +89,7 @@ while (have_posts()) : the_post();
 						<p><?php echo esc_html(get_the_author_meta('description') ?: __('Honest, practical investing education for Indian markets.', 'sco-investor')); ?></p>
 					</div>
 				</div>
+				<?php endif; ?>
 
 				<?php if (is_active_sidebar('sci-blog-sidebar')) :
 					dynamic_sidebar('sci-blog-sidebar');
@@ -141,6 +146,7 @@ while (have_posts()) : the_post();
 
 				<?php endif; ?>
 			</aside>
+			<?php endif; ?>
 
 		</div>
 	</div>

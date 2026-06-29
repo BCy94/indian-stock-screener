@@ -85,5 +85,39 @@ function sci_register_material_meta() {
 		'sanitize_callback' => 'sanitize_text_field',
 		'auth_callback'     => $auth_callback,
 	]);
+
+	// Optional — materials are free by default; leaving this blank keeps
+	// today's "Free Download" CTA exactly as-is, same zero-regression
+	// pattern used for every other toggle/field added in this build.
+	$number_sanitize = function ($value) {
+		return $value === '' ? '' : round((float) $value, 2);
+	};
+	register_post_meta('material', '_sci_price', [
+		'type'              => 'number',
+		'single'            => true,
+		'show_in_rest'      => true,
+		'sanitize_callback' => $number_sanitize,
+		'auth_callback'     => $auth_callback,
+	]);
+	register_post_meta('material', '_sci_price_original', [
+		'type'              => 'number',
+		'single'            => true,
+		'show_in_rest'      => true,
+		'sanitize_callback' => $number_sanitize,
+		'auth_callback'     => $auth_callback,
+	]);
+
+	// Links this material to a real WooCommerce product. When set, the
+	// file/tool link is only handed out to users who've bought that
+	// product (or who can edit the post) — see inc/commerce.php. Blank
+	// by default, so every material stays a free, open download exactly
+	// as it is today until the owner deliberately links a product.
+	register_post_meta('material', '_sci_product_id', [
+		'type'              => 'integer',
+		'single'            => true,
+		'show_in_rest'      => true,
+		'sanitize_callback' => 'absint',
+		'auth_callback'     => $auth_callback,
+	]);
 }
 add_action('init', 'sci_register_material_meta');

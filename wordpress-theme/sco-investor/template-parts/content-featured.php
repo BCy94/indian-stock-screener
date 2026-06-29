@@ -20,7 +20,7 @@
 			<span><?php printf(esc_html__('%d min read', 'sco-investor'), sci_reading_time()); ?></span>
 		</div>
 		<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-		<p><?php echo esc_html(wp_trim_words(get_the_excerpt(), 32)); ?></p>
+		<p><?php echo esc_html(wp_trim_words(get_the_excerpt(), get_theme_mod('sci_blog_excerpt_length', 22) + 10)); ?></p>
 		<a href="<?php the_permalink(); ?>" class="post-readmore"><?php esc_html_e('Read the full piece', 'sco-investor'); ?> <svg viewBox="0 0 24 24" fill="none" style="width:14px;height:14px;"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 	</div>
 </article>

@@ -94,6 +94,15 @@ function sci_reading_time($post_id = null) {
 }
 
 /**
+ * Reads a Customizer on/off toggle. Centralized so templates never call
+ * get_theme_mod() directly for a checkbox — one place to fix if the
+ * storage format ever changes.
+ */
+function sci_show($mod, $default = true) {
+	return (bool) get_theme_mod($mod, $default);
+}
+
+/**
  * The owner's free Stock Screener tool URL, set via Customizer.
  * Returns '' when not configured so callers can hide the link entirely
  * rather than pointing at a guessed/broken URL.
@@ -219,6 +228,19 @@ function sci_format_inr($amount) {
 }
 
 /**
+ * Whole-number percent-off for a struck-through original price. Returns 0
+ * (meaning: don't show a badge) when there's no real discount to report,
+ * so callers can do a plain `if ($discount > 0)` without re-checking the
+ * original price themselves.
+ */
+function sci_discount_percent($price, $price_original) {
+	$price          = (float) $price;
+	$price_original = (float) $price_original;
+	if ($price_original <= 0 || $price_original <= $price) return 0;
+	return (int) round((($price_original - $price) / $price_original) * 100);
+}
+
+/**
  * Display label for a course's level: the owner's manual override if
  * set, else derived from the course_level terms actually checked —
  * all three checked reads as "All Levels" (mirrors the static design's
@@ -286,13 +308,28 @@ function sci_material_badge($material_id) {
 
 /**
  * Resolves the actual link target for a material: an uploaded File
- * takes priority over an External URL when both are set.
+ * takes priority over an External URL when both are set. Returns ''
+ * when a purchasable product is linked and the current user hasn't
+ * bought it (and can't edit the post) — see inc/commerce.php — so every
+ * caller's existing "no link? show the disabled/locked state" branch
+ * already does the right thing with zero changes on their end.
  */
 function sci_material_link($material_id) {
+	if (!sci_user_can_access($material_id)) {
+		return '';
+	}
+
 	$file_id = (int) get_post_meta($material_id, '_sci_file', true);
 	if ($file_id) {
 		$url = wp_get_attachment_url($file_id);
-		if ($url) return $url;
+		if ($url) {
+			// Once a product is actually linked, route through the
+			// access-checked download endpoint instead of handing out the
+			// permanent, unauthenticated attachment URL — keeps a paid
+			// file's real location out of the page source. Free/unlinked
+			// materials keep today's direct URL untouched.
+			return sci_linked_product_id($material_id) ? sci_download_url($material_id) : $url;
+		}
 	}
 	$external = get_post_meta($material_id, '_sci_external_url', true);
 	if ($external) return $external;

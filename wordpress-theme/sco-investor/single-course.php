@@ -47,19 +47,22 @@ while (have_posts()) : the_post();
 				</div>
 
 				<div class="post-content reveal">
-					<?php the_content(); ?>
+					<?php if (sci_user_can_access($course_id)) : ?>
+						<?php the_content(); ?>
+					<?php else : ?>
+						<?php if (get_the_excerpt()) : ?><p><?php echo esc_html(get_the_excerpt()); ?></p><?php endif; ?>
+						<div class="glass" style="padding:28px;text-align:center;">
+							<p style="font-weight:600;margin-bottom:16px;"><?php esc_html_e('Enroll to unlock the full course content.', 'sco-investor'); ?></p>
+							<?php echo sci_course_cta_html($course_id, 'btn btn-primary'); ?>
+						</div>
+					<?php endif; ?>
 				</div>
 			</article>
 
 			<aside class="post-sidebar">
 				<div class="widget glass" style="text-align:center;">
-					<?php if ($price !== '') : ?>
-						<div class="price" style="justify-content:center;display:flex;">
-							<?php if ($price_original !== '') : ?><span class="old"><?php echo esc_html(sci_format_inr($price_original)); ?></span><?php endif; ?>
-							<?php echo esc_html(sci_format_inr($price)); ?>
-						</div>
-					<?php endif; ?>
-					<button class="btn btn-primary btn-block" disabled title="<?php esc_attr_e('Payments coming soon', 'sco-investor'); ?>" style="margin-top:14px;"><?php esc_html_e('Enroll Soon', 'sco-investor'); ?></button>
+					<?php get_template_part('template-parts/price', null, ['price' => $price, 'price_original' => $price_original, 'center' => true, 'note' => true]); ?>
+					<div style="margin-top:14px;"><?php echo sci_course_cta_html($course_id, 'btn btn-primary btn-block', true); ?></div>
 					<div class="course-meta" style="justify-content:center;margin-top:18px;">
 						<?php if ($weeks > 0) : ?>
 							<span><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> <?php echo esc_html(sprintf(_n('%d week', '%d weeks', $weeks, 'sco-investor'), $weeks)); ?></span>

@@ -36,6 +36,11 @@ function sci_seo_image() {
 		$img = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large');
 		if ($img) return $img[0];
 	}
+	$default_share_id = (int) get_theme_mod('sci_default_share_image');
+	if ($default_share_id) {
+		$img = wp_get_attachment_image_src($default_share_id, 'large');
+		if ($img) return $img[0];
+	}
 	$custom_logo_id = get_theme_mod('custom_logo');
 	if ($custom_logo_id) {
 		$img = wp_get_attachment_image_src($custom_logo_id, 'large');

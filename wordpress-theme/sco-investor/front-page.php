@@ -25,6 +25,12 @@ get_header();
 		</div>
 
 		<div class="hero-visual">
+			<?php $sci_hero_image_id = (int) get_theme_mod('sci_hero_image'); ?>
+			<?php if ($sci_hero_image_id) : ?>
+			<div class="hero-card hero-card--main hero-card--custom-image glass">
+				<?php echo wp_get_attachment_image($sci_hero_image_id, 'large', false, ['class' => 'hero-custom-image', 'alt' => get_bloginfo('name')]); ?>
+			</div>
+			<?php else : ?>
 			<div class="hero-card hero-card--main glass">
 				<div class="eyebrow"><span class="dot"></span> NIFTY 50</div>
 				<svg class="mini-chart" viewBox="0 0 300 120" preserveAspectRatio="none">
@@ -43,6 +49,7 @@ get_header();
 					<div class="kpi"><b style="color:var(--up)">▲ 1.2%</b><span><?php esc_html_e('Today', 'sco-investor'); ?></span></div>
 				</div>
 			</div>
+			<?php endif; ?>
 			<div class="hero-card hero-card--chip1 glass">
 				<div class="chip-row">
 					<span class="chip-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -59,10 +66,14 @@ get_header();
 	</div>
 </header>
 
+<?php $sci_ticker_items = sci_show('sci_show_ticker') ? sci_get_ticker_items() : []; ?>
+<?php if ($sci_ticker_items) : ?>
 <div class="ticker-wrap">
-	<div class="ticker-track"></div>
+	<?php get_template_part('template-parts/ticker', null, ['items' => $sci_ticker_items]); ?>
 </div>
+<?php endif; ?>
 
+<?php if (sci_show('sci_show_stats')) : ?>
 <section class="section section--tight">
 	<div class="container">
 		<div class="stats-row reveal-stagger">
@@ -73,7 +84,9 @@ get_header();
 		</div>
 	</div>
 </section>
+<?php endif; ?>
 
+<?php if (sci_show('sci_show_features')) : ?>
 <section class="section">
 	<div class="container">
 		<div class="section-head reveal">
@@ -100,7 +113,9 @@ get_header();
 		</div>
 	</div>
 </section>
+<?php endif; ?>
 
+<?php if (sci_show('sci_show_courses_home')) : ?>
 <section class="section" id="courses">
 	<div class="container">
 		<div class="section-head reveal">
@@ -129,7 +144,9 @@ get_header();
 		<div class="center" style="margin-top:48px;"><a href="<?php echo esc_url(sci_courses_url()); ?>" class="btn btn-primary"><?php esc_html_e('View All Courses', 'sco-investor'); ?></a></div>
 	</div>
 </section>
+<?php endif; ?>
 
+<?php if (sci_show('sci_show_materials_home')) : ?>
 <section class="section" id="materials">
 	<div class="container">
 		<div class="section-head reveal">
@@ -158,7 +175,9 @@ get_header();
 		<div class="center" style="margin-top:48px;"><a href="<?php echo esc_url(sci_materials_url()); ?>" class="btn btn-primary"><?php esc_html_e('Browse All Materials', 'sco-investor'); ?></a></div>
 	</div>
 </section>
+<?php endif; ?>
 
+<?php if (sci_show('sci_show_testimonials')) : ?>
 <section class="section">
 	<div class="container">
 		<div class="section-head reveal">
@@ -185,7 +204,9 @@ get_header();
 		</div>
 	</div>
 </section>
+<?php endif; ?>
 
+<?php if (sci_show('sci_show_cta_band')) : ?>
 <section class="section section--tight">
 	<div class="container">
 		<div class="cta-band glass reveal">
@@ -198,5 +219,6 @@ get_header();
 		</div>
 	</div>
 </section>
+<?php endif; ?>
 
 <?php get_footer(); ?>

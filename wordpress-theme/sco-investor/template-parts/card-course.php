@@ -43,11 +43,9 @@ $data_level     = sci_course_level_data_attr($course_id);
 			<?php endif; ?>
 		</div>
 		<div class="course-foot">
-			<?php if ($price !== '') : ?>
-				<span class="price"><?php if ($price_original !== '') : ?><span class="old"><?php echo esc_html(sci_format_inr($price_original)); ?></span><?php endif; ?><?php echo esc_html(sci_format_inr($price)); ?></span>
-			<?php endif; ?>
+			<?php get_template_part('template-parts/price', null, ['price' => $price, 'price_original' => $price_original]); ?>
 			<?php if ($cta === 'enroll') : ?>
-				<button class="btn btn-primary btn-sm" disabled title="<?php esc_attr_e('Payments coming soon', 'sco-investor'); ?>"><?php esc_html_e('Enroll Soon', 'sco-investor'); ?></button>
+				<?php echo sci_course_cta_html($course_id, 'btn btn-primary btn-sm'); ?>
 			<?php else : ?>
 				<a href="<?php echo esc_url(get_permalink($course_id)); ?>" class="btn btn-ghost btn-sm"><?php esc_html_e('View', 'sco-investor'); ?></a>
 			<?php endif; ?>

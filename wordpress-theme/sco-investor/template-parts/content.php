@@ -19,7 +19,7 @@ $data_level = (!is_wp_error($cat_slugs) && $cat_slugs) ? implode(' ', $cat_slugs
 			<span><?php echo esc_html(get_the_date()); ?></span>
 		</div>
 		<h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-		<p><?php echo esc_html(wp_trim_words(get_the_excerpt(), 22)); ?></p>
+		<p><?php echo esc_html(wp_trim_words(get_the_excerpt(), get_theme_mod('sci_blog_excerpt_length', 22))); ?></p>
 		<a href="<?php the_permalink(); ?>" class="post-readmore"><?php esc_html_e('Read more', 'sco-investor'); ?> →</a>
 	</div>
 </article>

@@ -238,6 +238,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 .hero-card--main { width: 88%; left: 6%; top: 8%; height: 380px; padding: 26px; }
 .hero-card--chip1 { width: 230px; left: -28px; bottom: 30px; }
 .hero-card--chip2 { width: 200px; right: -20px; top: 18px; }
+.hero-card--custom-image { padding: 0; overflow: hidden; }
+.hero-card--custom-image .hero-custom-image { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 .mini-chart { width: 100%; height: 120px; margin-top: 14px; }
 .mini-chart path.line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 600; stroke-dashoffset: 600; animation: draw 2.4s var(--ease) forwards; }
@@ -313,6 +315,12 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 .course-foot { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--surface-border); margin-top: 4px; }
 .price { font-family: var(--font-display); font-size: 22px; font-weight: 600; }
 .price .old { font-family: var(--font-body); font-size: 14px; font-weight: 400; color: var(--text-faint); text-decoration: line-through; margin-right: 6px; }
+.price-block { display: flex; flex-direction: column; gap: 6px; }
+.price-block--center { align-items: center; }
+.price-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.price-block--center .price-row { justify-content: center; }
+.price-discount { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: rgba(63, 143, 95, 0.14); color: var(--up); white-space: nowrap; }
+.price-note { font-size: 12.5px; color: var(--text-faint); }
 
 .badge {
   display: inline-flex; align-items: center; gap: 6px;
@@ -328,9 +336,12 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 .material-card:hover { transform: translateY(-3px); border-color: var(--accent); }
 .material-icon { width: 52px; height: 52px; border-radius: var(--radius-sm); flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--accent-soft); }
 .material-icon svg { width: 22px; height: 22px; color: var(--accent); }
+.material-icon--photo { background: none; overflow: hidden; }
+.material-icon--photo img { width: 100%; height: 100%; object-fit: cover; }
 .material-card h3 { font-size: 17px; margin-bottom: 6px; }
 .material-card p { font-size: 14px; color: var(--text-dim); margin-bottom: 12px; }
 .material-foot { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text-faint); }
+.price-block + .material-foot { margin-top: 10px; }
 
 /* ---------- Testimonials ---------- */
 .testi-card { padding: 30px; }
@@ -467,6 +478,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height
 
 /* Single post layout */
 .post-layout { display: grid; grid-template-columns: 1fr 320px; gap: 56px; align-items: start; }
+.post-layout--no-sidebar { grid-template-columns: 1fr; max-width: 760px; margin: 0 auto; }
 .post-content { font-size: 17px; color: var(--text-dim); }
 .post-content > * + * { margin-top: 22px; }
 .post-content h2 { color: var(--text); font-size: 26px; margin-top: 40px; }

@@ -96,5 +96,11 @@ function sci_register_course_meta() {
 	register_post_meta('course', '_sci_lesson_count', $integer_field);
 	register_post_meta('course', '_sci_badge', $string_field);
 	register_post_meta('course', '_sci_level_label', $string_field);
+
+	// Links this course to a real WooCommerce product so the existing
+	// "Payments coming soon" placeholder can become a real Buy button —
+	// see inc/commerce.php. Blank by default: a course with no linked
+	// product behaves exactly as it does today (disabled CTA).
+	register_post_meta('course', '_sci_product_id', $integer_field);
 }
 add_action('init', 'sci_register_course_meta');

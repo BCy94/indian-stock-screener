@@ -16,6 +16,8 @@ require SCI_THEME_DIR . '/inc/seo.php';
 require SCI_THEME_DIR . '/inc/schema.php';
 require SCI_THEME_DIR . '/inc/cpt-course.php';
 require SCI_THEME_DIR . '/inc/cpt-material.php';
+require SCI_THEME_DIR . '/inc/cpt-ticker.php';
+require SCI_THEME_DIR . '/inc/commerce.php';
 require SCI_THEME_DIR . '/inc/meta-boxes.php';
 require SCI_THEME_DIR . '/inc/blocks.php';
 require SCI_THEME_DIR . '/inc/block-styles.php';

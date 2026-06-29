@@ -4,25 +4,47 @@ msgid ""
 msgstr ""
 "Project-Id-Version: So Called Investor 1.0.0\n"
 "Report-Msgid-Bugs-To: https://socalledinvestor.com\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-06-29T22:39:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: sco-investor\n"
+
+#. Theme Name of the theme
+#. Author of the theme
+#: style.css:2
+#: style.css:4
+msgid "So Called Investor"
+msgstr ""
+
+#. Theme URI of the theme
+#. Author URI of the theme
+#: style.css:3
+#: style.css:5
+msgid "https://socalledinvestor.com"
+msgstr ""
+
+#. Description of the theme
+#: style.css:6
+msgid "Editorial Finance design theme for So Called Investor — honest, practical investing education for Indian markets. Classic-template WordPress theme with block-editor support for courses, materials, blog and an interactive SIP/Lumpsum calculator."
+msgstr ""
 
 #: 404.php:12
 #: archive-course.php:22
 #: archive-material.php:14
 #: archive.php:11
 #: home.php:18
-#: inc/template-tags.php:135
+#: inc/template-tags.php:144
 #: page-calculator.php:16
 #: page-contact.php:16
 #: page.php:12
 #: search.php:12
 #: single-course.php:22
-#: single-material.php:18
+#: single-material.php:20
 #: single.php:19
 msgid "Home"
 msgstr ""
@@ -49,15 +71,16 @@ msgid "Read the Blog"
 msgstr ""
 
 #: archive-course.php:22
-#: front-page.php:107
+#: front-page.php:122
 #: inc/cpt-course.php:14
-#: inc/template-tags.php:136
-#: inc/template-tags.php:163
+#: inc/template-tags.php:145
+#: inc/template-tags.php:172
 #: single-course.php:23
 msgid "Courses"
 msgstr ""
 
 #: archive-course.php:23
+#, php-format
 msgid "%d Course · Lifetime Access"
 msgid_plural "%d Courses · Lifetime Access"
 msgstr[0] ""
@@ -121,46 +144,54 @@ msgid "Yes — every course is a one-time purchase with lifetime access to all f
 msgstr ""
 
 #: archive-course.php:76
-msgid "When will online payments be enabled?"
+msgid "How do payments work?"
 msgstr ""
 
 #: archive-course.php:77
-msgid "We're finalizing secure checkout with automatic payment verification. Enrollment will open as soon as it's live — join the newsletter to get notified first."
+msgid "Checkout is secure and handled by WooCommerce — pay by card, UPI or netbanking depending on what your payment provider supports. Access unlocks automatically the moment your payment is confirmed."
+msgstr ""
+
+#: archive-course.php:80
+msgid "When will online payments be enabled?"
 msgstr ""
 
 #: archive-course.php:81
+msgid "We're finalizing secure checkout with automatic payment verification. Enrollment will open as soon as it's live — join the newsletter to get notified first."
+msgstr ""
+
+#: archive-course.php:85
 msgid "Are these courses suitable for complete beginners?"
 msgstr ""
 
-#: archive-course.php:82
+#: archive-course.php:86
 msgid "Yes. Each course lists its level clearly, and beginner courses start from the absolute basics with no prior market knowledge assumed."
 msgstr ""
 
-#: archive-course.php:86
+#: archive-course.php:90
 msgid "Is this investment advice?"
 msgstr ""
 
-#: archive-course.php:87
+#: archive-course.php:91
 msgid "No. All content is for educational purposes only. Please do your own research or consult a SEBI-registered advisor before investing."
 msgstr ""
 
-#: archive-course.php:98
+#: archive-course.php:102
 msgid "Not sure which course fits you?"
 msgstr ""
 
-#: archive-course.php:99
+#: archive-course.php:103
 msgid "Tell us your experience level and goals — we'll point you to the right starting course."
 msgstr ""
 
-#: archive-course.php:101
+#: archive-course.php:105
 msgid "Ask Us"
 msgstr ""
 
 #: archive-material.php:14
 #: inc/cpt-material.php:25
-#: inc/template-tags.php:137
-#: inc/template-tags.php:164
-#: single-material.php:19
+#: inc/template-tags.php:146
+#: inc/template-tags.php:173
+#: single-material.php:21
 msgid "Materials"
 msgstr ""
 
@@ -209,54 +240,14 @@ msgstr ""
 msgid "See Courses"
 msgstr ""
 
-#: blocks/accordion/edit.js:49
-msgid "Settings"
-msgstr ""
-
-#: blocks/accordion/edit.js:51
-msgid "Open by default"
-msgstr ""
-
-#: blocks/accordion/edit.js:71
-msgid "Question…"
-msgstr ""
-
-#: blocks/accordion/edit.js:85
-msgid "Answer…"
-msgstr ""
-
-#: blocks/calculator/edit.js:23
-msgid "Calculator Defaults"
-msgstr ""
-
-#: blocks/calculator/edit.js:25
-msgid "Default Tab"
-msgstr ""
-
-#: blocks/calculator/edit.js:28
 #: blocks/calculator/render.php:25
+#: blocks/calculator/edit.js:28
 msgid "SIP"
 msgstr ""
 
-#: blocks/calculator/edit.js:29
 #: blocks/calculator/render.php:26
+#: blocks/calculator/edit.js:29
 msgid "Lumpsum"
-msgstr ""
-
-#: blocks/calculator/edit.js:34
-msgid "Default Monthly Amount (₹)"
-msgstr ""
-
-#: blocks/calculator/edit.js:40
-msgid "Default Lumpsum Amount (₹)"
-msgstr ""
-
-#: blocks/calculator/edit.js:46
-msgid "Default Expected Return (% p.a.)"
-msgstr ""
-
-#: blocks/calculator/edit.js:52
-msgid "Default Time Period (years)"
 msgstr ""
 
 #: blocks/calculator/render.php:34
@@ -304,6 +295,7 @@ msgid "(Edit)"
 msgstr ""
 
 #: comments.php:32
+#, php-format
 msgid "%1$s at %2$s"
 msgstr ""
 
@@ -335,6 +327,7 @@ msgid "Comment"
 msgstr ""
 
 #: comments.php:91
+#, php-format
 msgid "%s Comment"
 msgid_plural "%s Comments"
 msgstr[0] ""
@@ -353,6 +346,7 @@ msgid "Leave a Comment"
 msgstr ""
 
 #: comments.php:125
+#, php-format
 msgid "Leave a Reply to %s"
 msgstr ""
 
@@ -432,7 +426,7 @@ msgid "Practical courses, research materials and tools for Indian equity investo
 msgstr ""
 
 #: front-page.php:17
-#: front-page.php:195
+#: front-page.php:216
 msgid "Explore Courses"
 msgstr ""
 
@@ -464,175 +458,175 @@ msgstr ""
 msgid "hype, 100% practical"
 msgstr ""
 
-#: front-page.php:41
+#: front-page.php:47
 msgid "YTD Return"
 msgstr ""
 
-#: front-page.php:42
+#: front-page.php:48
 msgid "Index Level"
 msgstr ""
 
-#: front-page.php:43
+#: front-page.php:49
 msgid "Today"
 msgstr ""
 
-#: front-page.php:49
+#: front-page.php:56
 msgid "today"
 msgstr ""
 
-#: front-page.php:55
+#: front-page.php:62
 msgid "Course Completed"
 msgstr ""
 
-#: front-page.php:55
+#: front-page.php:62
 msgid "Fundamental Analysis"
 msgstr ""
 
-#: front-page.php:69
+#: front-page.php:80
 msgid "Investors Taught"
 msgstr ""
 
-#: front-page.php:70
+#: front-page.php:81
 msgid "Stocks Tracked Live"
 msgstr ""
 
-#: front-page.php:71
+#: front-page.php:82
 msgid "Market Experience"
 msgstr ""
 
-#: front-page.php:72
+#: front-page.php:83
 msgid "Average Rating"
 msgstr ""
 
-#: front-page.php:80
+#: front-page.php:93
 msgid "Why So Called Investor"
 msgstr ""
 
-#: front-page.php:81
+#: front-page.php:94
 msgid "Built different from typical \"finfluencer\" content"
 msgstr ""
 
-#: front-page.php:82
+#: front-page.php:95
 msgid "No prediction calls, no paid pumps — just frameworks you can actually apply to your own portfolio."
 msgstr ""
 
-#: front-page.php:87
+#: front-page.php:100
 msgid "Practical Curriculum"
 msgstr ""
 
-#: front-page.php:88
+#: front-page.php:101
 msgid "Step-by-step frameworks for fundamental and technical analysis you can use the same day you learn them."
 msgstr ""
 
-#: front-page.php:92
+#: front-page.php:105
 msgid "Real Portfolio Breakdowns"
 msgstr ""
 
-#: front-page.php:93
+#: front-page.php:106
 msgid "Live case studies and teardowns of actual Indian companies — the good, the bad, and the red flags."
 msgstr ""
 
-#: front-page.php:97
+#: front-page.php:110
 msgid "Lifetime Access & Community"
 msgstr ""
 
-#: front-page.php:98
+#: front-page.php:111
 msgid "One-time purchase, lifetime updates, plus a private community to ask questions and track progress together."
 msgstr ""
 
-#: front-page.php:108
+#: front-page.php:123
 msgid "Learn the way real investors actually think"
 msgstr ""
 
-#: front-page.php:109
+#: front-page.php:124
 msgid "Sample of our catalog — full pricing and curriculum on the courses page."
 msgstr ""
 
-#: front-page.php:126
+#: front-page.php:141
 msgid "Courses coming soon — add your first Course from the WordPress admin."
 msgstr ""
 
-#: front-page.php:129
+#: front-page.php:144
 msgid "View All Courses"
 msgstr ""
 
-#: front-page.php:136
+#: front-page.php:153
 msgid "Free Resources"
 msgstr ""
 
-#: front-page.php:137
+#: front-page.php:154
 msgid "Super Investor Materials Library"
 msgstr ""
 
-#: front-page.php:138
+#: front-page.php:155
 msgid "Templates, checklists and tools — free to download, no signup gimmicks."
 msgstr ""
 
-#: front-page.php:155
+#: front-page.php:172
 msgid "Materials coming soon — add your first Material from the WordPress admin."
 msgstr ""
 
-#: front-page.php:158
+#: front-page.php:175
 msgid "Browse All Materials"
 msgstr ""
 
-#: front-page.php:165
+#: front-page.php:184
 msgid "Sample Feedback"
 msgstr ""
 
-#: front-page.php:166
+#: front-page.php:185
 msgid "What investors say"
 msgstr ""
 
-#: front-page.php:167
+#: front-page.php:186
 msgid "Placeholder quotes — swap these for your real student testimonials before launch."
 msgstr ""
 
-#: front-page.php:172
+#: front-page.php:191
 msgid "\"Finally a course that explains the 'why' behind every ratio instead of just throwing formulas at you.\""
 msgstr ""
 
-#: front-page.php:173
+#: front-page.php:192
 msgid "Rohit A."
 msgstr ""
 
-#: front-page.php:173
+#: front-page.php:192
 msgid "Working Professional, Pune"
 msgstr ""
 
-#: front-page.php:177
+#: front-page.php:196
 msgid "\"The portfolio breakdowns alone were worth the price. Practical, not theoretical.\""
 msgstr ""
 
-#: front-page.php:178
+#: front-page.php:197
 msgid "Sneha N."
 msgstr ""
 
-#: front-page.php:178
+#: front-page.php:197
 msgid "First-time Investor"
 msgstr ""
 
-#: front-page.php:182
+#: front-page.php:201
 msgid "\"Free materials are better than most paid courses out there. The screener tool is a nice bonus.\""
 msgstr ""
 
-#: front-page.php:183
+#: front-page.php:202
 msgid "Vikram K."
 msgstr ""
 
-#: front-page.php:183
+#: front-page.php:202
 msgid "Part-time Trader"
 msgstr ""
 
-#: front-page.php:192
+#: front-page.php:213
 msgid "Ready to invest with confidence?"
 msgstr ""
 
-#: front-page.php:193
+#: front-page.php:214
 msgid "Join thousands of Indian investors learning to read businesses, not just stock tickers."
 msgstr ""
 
-#: front-page.php:196
+#: front-page.php:217
 msgid "Talk to Us"
 msgstr ""
 
@@ -641,8 +635,8 @@ msgid "Skip to content"
 msgstr ""
 
 #: home.php:18
-#: inc/template-tags.php:138
-#: inc/template-tags.php:165
+#: inc/template-tags.php:147
+#: inc/template-tags.php:174
 #: single.php:20
 #: single.php:21
 msgid "Blog"
@@ -690,6 +684,47 @@ msgstr ""
 
 #: inc/block-styles.php:19
 msgid "Bronze"
+msgstr ""
+
+#: inc/commerce.php:134
+msgid "Payments coming soon"
+msgstr ""
+
+#: inc/commerce.php:135
+msgid "Enroll Soon"
+msgstr ""
+
+#: inc/commerce.php:141
+msgid "✓ You have full access to this course."
+msgstr ""
+
+#: inc/commerce.php:147
+msgid "Go to Course"
+msgstr ""
+
+#: inc/commerce.php:155
+#: inc/commerce.php:192
+msgid "Buy Now"
+msgstr ""
+
+#: inc/commerce.php:250
+msgid "You do not have access to this file. Please purchase it first."
+msgstr ""
+
+#: inc/commerce.php:256
+msgid "File not found."
+msgstr ""
+
+#: inc/commerce.php:304
+msgid "My Courses"
+msgstr ""
+
+#: inc/commerce.php:305
+msgid "My Materials"
+msgstr ""
+
+#: inc/commerce.php:356
+msgid "Nothing here yet — your purchases will show up automatically once you buy a course or material."
 msgstr ""
 
 #: inc/contact-form.php:38
@@ -767,7 +802,7 @@ msgid "Course Level"
 msgstr ""
 
 #: inc/cpt-course.php:40
-#: inc/template-tags.php:235
+#: inc/template-tags.php:257
 msgid "All Levels"
 msgstr ""
 
@@ -835,32 +870,159 @@ msgstr ""
 msgid "Set material thumbnail"
 msgstr ""
 
-#: inc/customizer.php:10
+#: inc/cpt-ticker.php:18
+#: inc/cpt-ticker.php:23
+msgid "Ticker Stocks"
+msgstr ""
+
+#: inc/cpt-ticker.php:19
+msgid "Ticker Stock"
+msgstr ""
+
+#: inc/cpt-ticker.php:20
+msgid "Add New Ticker Stock"
+msgstr ""
+
+#: inc/cpt-ticker.php:21
+msgid "Edit Ticker Stock"
+msgstr ""
+
+#: inc/cpt-ticker.php:22
+msgid "New Ticker Stock"
+msgstr ""
+
+#: inc/cpt-ticker.php:24
+msgid "Search Ticker Stocks"
+msgstr ""
+
+#: inc/cpt-ticker.php:25
+msgid "No ticker stocks found."
+msgstr ""
+
+#: inc/cpt-ticker.php:134
+msgid "Stock Details"
+msgstr ""
+
+#: inc/cpt-ticker.php:146
+#: inc/meta-boxes.php:30
+#: inc/meta-boxes.php:108
+msgid "Price (₹)"
+msgstr ""
+
+#: inc/cpt-ticker.php:150
+msgid "Change (%)"
+msgstr ""
+
+#: inc/cpt-ticker.php:153
+msgid "Use a negative number for a fall, e.g. -0.85. Shown with ▲ (green) or ▼ (red) automatically."
+msgstr ""
+
+#: inc/cpt-ticker.php:157
+msgid "The stock symbol is the post Title above. Set the display order from the \"Order\" box in the sidebar."
+msgstr ""
+
+#: inc/customizer.php:14
 msgid "So Called Investor — Theme Options"
 msgstr ""
 
-#: inc/customizer.php:21
+#: inc/customizer.php:25
 msgid "Stock Screener URL"
 msgstr ""
 
-#: inc/customizer.php:22
+#: inc/customizer.php:26
 msgid "Link to your free stock screener tool. Leave blank to hide the link sitewide."
 msgstr ""
 
-#: inc/customizer.php:27
+#: inc/customizer.php:31
 msgid "Twitter / X URL"
 msgstr ""
 
-#: inc/customizer.php:28
+#: inc/customizer.php:32
 msgid "YouTube URL"
 msgstr ""
 
-#: inc/customizer.php:29
+#: inc/customizer.php:33
 msgid "Instagram URL"
 msgstr ""
 
-#: inc/customizer.php:30
+#: inc/customizer.php:34
 msgid "Telegram URL"
+msgstr ""
+
+#: inc/customizer.php:57
+msgid "Homepage Sections"
+msgstr ""
+
+#: inc/customizer.php:62
+msgid "Stock ticker tape"
+msgstr ""
+
+#: inc/customizer.php:63
+msgid "Stats row (investors taught, etc.)"
+msgstr ""
+
+#: inc/customizer.php:64
+msgid "\"Why So Called Investor\" section"
+msgstr ""
+
+#: inc/customizer.php:65
+msgid "Courses preview"
+msgstr ""
+
+#: inc/customizer.php:66
+msgid "Materials preview"
+msgstr ""
+
+#: inc/customizer.php:67
+msgid "Testimonials"
+msgstr ""
+
+#: inc/customizer.php:68
+msgid "Bottom call-to-action band"
+msgstr ""
+
+#: inc/customizer.php:87
+msgid "Blog Settings"
+msgstr ""
+
+#: inc/customizer.php:92
+msgid "Show sidebar on blog posts"
+msgstr ""
+
+#: inc/customizer.php:93
+msgid "Show author box on blog posts"
+msgstr ""
+
+#: inc/customizer.php:94
+msgid "Show featured image on blog posts"
+msgstr ""
+
+#: inc/customizer.php:116
+msgid "Excerpt length (words)"
+msgstr ""
+
+#: inc/customizer.php:117
+msgid "How much of each post to show in blog listing cards."
+msgstr ""
+
+#: inc/customizer.php:128
+msgid "Images"
+msgstr ""
+
+#: inc/customizer.php:139
+msgid "Homepage Hero Image"
+msgstr ""
+
+#: inc/customizer.php:140
+msgid "Optional. Replaces the animated chart graphic in the homepage hero with your own image."
+msgstr ""
+
+#: inc/customizer.php:151
+msgid "Default Social Share Image"
+msgstr ""
+
+#: inc/customizer.php:152
+msgid "Used for Facebook/Twitter/etc. link previews on any page that has no featured image of its own."
 msgstr ""
 
 #: inc/meta-boxes.php:12
@@ -871,96 +1033,129 @@ msgstr ""
 msgid "Material Details"
 msgstr ""
 
-#: inc/meta-boxes.php:29
-msgid "Price (₹)"
-msgstr ""
-
-#: inc/meta-boxes.php:33
+#: inc/meta-boxes.php:34
+#: inc/meta-boxes.php:115
 msgid "Original Price (₹)"
 msgstr ""
 
-#: inc/meta-boxes.php:36
+#: inc/meta-boxes.php:37
+#: inc/meta-boxes.php:118
 msgid "Optional. Shown struck through next to the price, e.g. for a discount."
 msgstr ""
 
-#: inc/meta-boxes.php:40
+#: inc/meta-boxes.php:41
 msgid "Duration (weeks)"
 msgstr ""
 
-#: inc/meta-boxes.php:44
+#: inc/meta-boxes.php:45
 msgid "Lesson Count"
 msgstr ""
 
-#: inc/meta-boxes.php:48
+#: inc/meta-boxes.php:49
 msgid "Level Label"
 msgstr ""
 
-#: inc/meta-boxes.php:50
+#: inc/meta-boxes.php:51
 msgid "e.g. Beginner → Pro"
 msgstr ""
 
-#: inc/meta-boxes.php:51
+#: inc/meta-boxes.php:52
 msgid "Optional. Overrides the text shown on the card. Leave blank to show the Course Level(s) checked in the sidebar — checking all three shows \"All Levels\"."
 msgstr ""
 
-#: inc/meta-boxes.php:55
-#: inc/meta-boxes.php:104
+#: inc/meta-boxes.php:56
+#: inc/meta-boxes.php:138
 msgid "Badge"
 msgstr ""
 
-#: inc/meta-boxes.php:57
+#: inc/meta-boxes.php:58
 msgid "e.g. Bestseller, Popular"
 msgstr ""
 
-#: inc/meta-boxes.php:58
+#: inc/meta-boxes.php:59
 msgid "Optional. Leave blank to show no badge."
 msgstr ""
 
-#: inc/meta-boxes.php:62
+#: inc/meta-boxes.php:63
+#: inc/meta-boxes.php:145
+msgid "Linked Product (WooCommerce)"
+msgstr ""
+
+#: inc/meta-boxes.php:67
+msgid "— None (no payment required) —"
+msgstr ""
+
+#: inc/meta-boxes.php:72
+msgid "Selling this course? Link it to a WooCommerce product to show a real Buy Now button and unlock content automatically on purchase."
+msgstr ""
+
+#: inc/meta-boxes.php:74
+msgid "Install and activate WooCommerce to sell this course with a real payment gateway (Razorpay, Stripe, PayPal, etc.)."
+msgstr ""
+
+#: inc/meta-boxes.php:79
 msgid "Set the Course Level(s) from the box in the sidebar."
 msgstr ""
 
-#: inc/meta-boxes.php:77
+#: inc/meta-boxes.php:97
 msgid "Material Type"
 msgstr ""
 
-#: inc/meta-boxes.php:84
+#: inc/meta-boxes.php:104
 msgid "Controls the icon and default badge shown on the card."
 msgstr ""
 
-#: inc/meta-boxes.php:88
+#: inc/meta-boxes.php:111
+msgid "Optional. Leave blank to keep this a free download."
+msgstr ""
+
+#: inc/meta-boxes.php:122
 msgid "File"
 msgstr ""
 
-#: inc/meta-boxes.php:91
+#: inc/meta-boxes.php:125
 msgid "Select File"
 msgstr ""
 
-#: inc/meta-boxes.php:92
+#: inc/meta-boxes.php:126
 msgid "Remove"
 msgstr ""
 
-#: inc/meta-boxes.php:97
+#: inc/meta-boxes.php:131
 msgid "External URL"
 msgstr ""
 
-#: inc/meta-boxes.php:100
+#: inc/meta-boxes.php:134
 msgid "Use this for Google Sheets, external tools, etc. If a File is also set above, the File is used instead."
 msgstr ""
 
-#: inc/meta-boxes.php:106
+#: inc/meta-boxes.php:140
 msgid "e.g. PDF · 6 pages"
 msgstr ""
 
-#: inc/meta-boxes.php:107
+#: inc/meta-boxes.php:141
 msgid "Optional. Leave blank to use the Material Type label as the badge."
 msgstr ""
 
-#: inc/meta-boxes.php:123
+#: inc/meta-boxes.php:149
+msgid "— None (free download) —"
+msgstr ""
+
+#: inc/meta-boxes.php:154
+msgid "Selling this material? Link it to a WooCommerce product to show a real Buy Now button and gate the file/link until purchase."
+msgstr ""
+
+#: inc/meta-boxes.php:156
+msgid "Install and activate WooCommerce to sell this with a real payment gateway (Razorpay, Stripe, PayPal, etc.)."
+msgstr ""
+
+#: inc/meta-boxes.php:173
 msgid "Select a file"
 msgstr ""
 
+#. translators: %s: search query
 #: inc/schema.php:66
+#, php-format
 msgid "Search results for \"%s\""
 msgstr ""
 
@@ -984,51 +1179,51 @@ msgstr ""
 msgid "Investor"
 msgstr ""
 
-#: inc/template-tags.php:139
-#: inc/template-tags.php:166
+#: inc/template-tags.php:148
+#: inc/template-tags.php:175
 msgid "Calculator"
 msgstr ""
 
-#: inc/template-tags.php:140
-#: inc/template-tags.php:167
+#: inc/template-tags.php:149
+#: inc/template-tags.php:176
 msgid "About"
 msgstr ""
 
-#: inc/template-tags.php:141
+#: inc/template-tags.php:150
 msgid "Contact"
 msgstr ""
 
-#: inc/template-tags.php:151
+#: inc/template-tags.php:160
 #: template-parts/navbar.php:31
 #: template-parts/navbar.php:47
 msgid "Get Started"
 msgstr ""
 
-#: inc/template-tags.php:174
+#: inc/template-tags.php:183
 msgid "Stock Screener"
 msgstr ""
 
-#: inc/template-tags.php:185
+#: inc/template-tags.php:194
 msgid "Contact Us"
 msgstr ""
 
-#: inc/template-tags.php:186
+#: inc/template-tags.php:195
 msgid "FAQs"
 msgstr ""
 
-#: inc/template-tags.php:190
+#: inc/template-tags.php:199
 msgid "Terms of Service"
 msgstr ""
 
-#: inc/template-tags.php:315
+#: inc/template-tags.php:352
 msgid "Open Tool"
 msgstr ""
 
-#: inc/template-tags.php:316
+#: inc/template-tags.php:353
 msgid "Get Copy"
 msgstr ""
 
-#: inc/template-tags.php:317
+#: inc/template-tags.php:354
 msgid "Download"
 msgstr ""
 
@@ -1040,9 +1235,14 @@ msgstr ""
 msgid "Shown on single blog posts, below the author box."
 msgstr ""
 
+#. Template Name of the theme
+#: page-calculator.php:3
+msgid "Calculator Page"
+msgstr ""
+
 #: page-calculator.php:17
-#: single-course.php:105
-#: single.php:136
+#: single-course.php:108
+#: single.php:141
 msgid "Free Tool"
 msgstr ""
 
@@ -1056,6 +1256,11 @@ msgstr ""
 
 #: page-calculator.php:37
 msgid "Browse Courses"
+msgstr ""
+
+#. Template Name of the theme
+#: page-contact.php:3
+msgid "Contact Page"
 msgstr ""
 
 #: page-contact.php:17
@@ -1174,6 +1379,46 @@ msgstr ""
 msgid "Yes — select Partnership / Collaboration in the form above and tell us a bit about your idea."
 msgstr ""
 
+#: patterns/about-cta.php:3
+msgctxt "Pattern title"
+msgid "About — CTA Band"
+msgstr ""
+
+#: patterns/about-cta.php:7
+msgctxt "Pattern description"
+msgid "A centered call-to-action band with two buttons. Set the button links after inserting."
+msgstr ""
+
+#: patterns/about-mission.php:3
+msgctxt "Pattern title"
+msgid "About — Mission"
+msgstr ""
+
+#: patterns/about-mission.php:7
+msgctxt "Pattern description"
+msgid "Two-column mission statement with a stat grid."
+msgstr ""
+
+#: patterns/about-timeline.php:3
+msgctxt "Pattern title"
+msgid "About — Timeline"
+msgstr ""
+
+#: patterns/about-timeline.php:7
+msgctxt "Pattern description"
+msgid "A vertical milestone timeline. Duplicate the last item to add another year."
+msgstr ""
+
+#: patterns/about-values.php:3
+msgctxt "Pattern title"
+msgid "About — Values"
+msgstr ""
+
+#: patterns/about-values.php:7
+msgctxt "Pattern description"
+msgid "Three value cards with icon, heading and description. Duplicate a column to add another value."
+msgstr ""
+
 #: search.php:12
 #: searchform.php:12
 msgid "Search"
@@ -1184,12 +1429,14 @@ msgid "Search Results"
 msgstr ""
 
 #: search.php:17
+#, php-format
 msgid "%1$d result for \"%2$s\""
 msgid_plural "%1$d results for \"%2$s\""
 msgstr[0] ""
 msgstr[1] ""
 
 #: search.php:22
+#, php-format
 msgid "No results for \"%s\"."
 msgstr ""
 
@@ -1205,75 +1452,73 @@ msgstr ""
 msgid "Lifetime Access"
 msgstr ""
 
-#: single-course.php:62
-#: template-parts/card-course.php:50
-msgid "Payments coming soon"
+#: single-course.php:55
+msgid "Enroll to unlock the full course content."
 msgstr ""
 
-#: single-course.php:62
-#: template-parts/card-course.php:50
-msgid "Enroll Soon"
-msgstr ""
-
-#: single-course.php:65
+#: single-course.php:68
 #: template-parts/card-course.php:39
+#, php-format
 msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: single-course.php:68
+#: single-course.php:71
 #: template-parts/card-course.php:42
+#, php-format
 msgid "%d+ lessons"
 msgstr ""
 
-#: single-course.php:84
+#: single-course.php:87
 msgid "More Courses"
 msgstr ""
 
-#: single-course.php:106
+#: single-course.php:109
 msgid "Practice what you learn here on real Nifty 50 stocks."
 msgstr ""
 
-#: single-course.php:107
-#: single.php:138
+#: single-course.php:110
+#: single.php:143
 msgid "Open Stock Screener"
 msgstr ""
 
 #: single.php:26
 #: template-parts/content-featured.php:20
+#, php-format
 msgid "%d min read"
 msgstr ""
 
 #: single.php:29
+#, php-format
 msgid "Published %1$s · by %2$s"
 msgstr ""
 
-#: single.php:64
+#: single.php:66
 msgid "Previous"
 msgstr ""
 
-#: single.php:70
+#: single.php:72
 msgid "Next"
 msgstr ""
 
-#: single.php:85
+#: single.php:89
 msgid "Honest, practical investing education for Indian markets."
 msgstr ""
 
-#: single.php:104
+#: single.php:109
 msgid "Popular Reading"
 msgstr ""
 
-#: single.php:125
+#: single.php:130
 msgid "Categories"
 msgstr ""
 
-#: single.php:137
+#: single.php:142
 msgid "Run the numbers from this article on real Nifty 50 stocks."
 msgstr ""
 
-#: template-parts/card-course.php:52
+#: template-parts/card-course.php:50
 msgid "View"
 msgstr ""
 
@@ -1286,6 +1531,7 @@ msgid "Nothing here yet"
 msgstr ""
 
 #: template-parts/content-none.php:9
+#, php-format
 msgid "No results for \"%s\". Try a different search term."
 msgstr ""
 
@@ -1305,3 +1551,51 @@ msgstr ""
 msgid "Menu"
 msgstr ""
 
+#: template-parts/price.php:29
+#, php-format
+msgid "%d%% off"
+msgstr ""
+
+#: template-parts/price.php:31
+msgid "One-time payment · inclusive of all taxes"
+msgstr ""
+
+#: blocks/accordion/edit.js:49
+msgid "Settings"
+msgstr ""
+
+#: blocks/accordion/edit.js:51
+msgid "Open by default"
+msgstr ""
+
+#: blocks/accordion/edit.js:71
+msgid "Question…"
+msgstr ""
+
+#: blocks/accordion/edit.js:85
+msgid "Answer…"
+msgstr ""
+
+#: blocks/calculator/edit.js:23
+msgid "Calculator Defaults"
+msgstr ""
+
+#: blocks/calculator/edit.js:25
+msgid "Default Tab"
+msgstr ""
+
+#: blocks/calculator/edit.js:34
+msgid "Default Monthly Amount (₹)"
+msgstr ""
+
+#: blocks/calculator/edit.js:40
+msgid "Default Lumpsum Amount (₹)"
+msgstr ""
+
+#: blocks/calculator/edit.js:46
+msgid "Default Expected Return (% p.a.)"
+msgstr ""
+
+#: blocks/calculator/edit.js:52
+msgid "Default Time Period (years)"
+msgstr ""

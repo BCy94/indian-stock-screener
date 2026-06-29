@@ -72,7 +72,11 @@ $course_count = wp_count_posts('course')->publish;
 				'answer'   => __('Yes — every course is a one-time purchase with lifetime access to all future updates and added lessons.', 'sco-investor'),
 				'open'     => true,
 			],
-			[
+			sci_has_woocommerce() ? [
+				'question' => __('How do payments work?', 'sco-investor'),
+				'answer'   => __('Checkout is secure and handled by WooCommerce — pay by card, UPI or netbanking depending on what your payment provider supports. Access unlocks automatically the moment your payment is confirmed.', 'sco-investor'),
+				'open'     => false,
+			] : [
 				'question' => __('When will online payments be enabled?', 'sco-investor'),
 				'answer'   => __("We're finalizing secure checkout with automatic payment verification. Enrollment will open as soon as it's live — join the newsletter to get notified first.", 'sco-investor'),
 				'open'     => false,
