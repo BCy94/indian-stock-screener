@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "sci/accordion",
+	"title": "Accordion (FAQ)",
+	"category": "widgets",
+	"icon": "list-view",
+	"description": "An expand/collapse FAQ list. Add Accordion Item blocks inside, one per question.",
+	"keywords": ["faq", "accordion", "questions"],
+	"textdomain": "sco-investor",
+	"supports": {
+		"html": false
+	},
+	"editorScript": "sci-accordion-editor",
+	"render": "file:./render.php",
+	"viewScript": "file:./view.js"
+}

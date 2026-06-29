@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "sci/calculator",
+	"title": "SIP / Lumpsum Calculator",
+	"category": "widgets",
+	"icon": "calculator",
+	"description": "Interactive SIP and lumpsum investment growth calculator with a live chart.",
+	"keywords": ["sip", "lumpsum", "investment", "calculator"],
+	"textdomain": "sco-investor",
+	"attributes": {
+		"defaultMode": {
+			"type": "string",
+			"default": "sip"
+		},
+		"defaultAmount": {
+			"type": "number",
+			"default": 10000
+		},
+		"defaultLumpsum": {
+			"type": "number",
+			"default": 100000
+		},
+		"defaultRate": {
+			"type": "number",
+			"default": 12
+		},
+		"defaultYears": {
+			"type": "number",
+			"default": 10
+		}
+	},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "sci-calculator-editor",
+	"render": "file:./render.php",
+	"viewScript": "file:./view.js"
+}

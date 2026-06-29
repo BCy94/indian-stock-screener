@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "sci/accordion-item",
+	"title": "Accordion Item",
+	"category": "widgets",
+	"icon": "editor-help",
+	"description": "A single question and answer inside an Accordion block.",
+	"keywords": ["faq", "question", "answer"],
+	"textdomain": "sco-investor",
+	"parent": ["sci/accordion"],
+	"attributes": {
+		"question": { "type": "string", "default": "" },
+		"answer": { "type": "string", "default": "" },
+		"openByDefault": { "type": "boolean", "default": false }
+	},
+	"supports": {
+		"html": false
+	},
+	"editorScript": "sci-accordion-editor",
+	"render": "file:./render.php"
+}

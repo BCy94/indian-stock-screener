@@ -1,0 +1,12 @@
+/*
+ * Editor canvas only. The block editor iframe never runs the front-end's
+ * dark/light toggle script, so without this the canvas falls back to the
+ * browser default white background while theme.json's bronze/heading
+ * styles render on top of it. This pins the canvas to the same charcoal/
+ * ivory dark-mode default main.css applies before any toggle runs.
+ */
+
+.editor-styles-wrapper {
+  background: #14171F;
+  color: #F6F1E7;
+}
