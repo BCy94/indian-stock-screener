@@ -15,6 +15,12 @@ let loadingManager = null;
 window.dataSource = 'none';
 let lastUpdateTimestamp = null;
 
+// Deep-dive modal state: the modal element is created once and reused; the "current symbol"
+// guards against a slow/late fetchHistory response overwriting the modal after the user has
+// already closed it or opened a different stock.
+let stockDetailModalEl = null;
+let stockDetailCurrentSymbol = null;
+
 const CACHE_KEY_PREFIX = 'screenerCache_v1_';
 
 // Initialize on page load
@@ -43,21 +49,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Add calculated fields shared by both live and cached data
 function enrichStocks(rawStocks, selectedIndex) {
-    return rawStocks.map((stock, index) => {
-        const enriched = {
-            ...stock,
-            rank: index + 1,
-            score: calculateScore(stock),
-            // Use proper sector from stock universe
-            sector: stock.sector || 'Unknown',
-            industry: stock.industry || 'Unknown',
-            basicIndustry: stock.basicIndustry || 'Unknown',
-            index: selectedIndex
-        };
-        Object.assign(enriched, calculateMomentum(enriched));
-        enriched.breakout = isBreakoutCandidate(enriched);
-        return enriched;
-    });
+    return rawStocks.map((stock, index) => enrichOneStock(stock, index + 1, selectedIndex));
+}
+
+// Per-stock enrichment, factored out of enrichStocks so the ticker-lookup path
+// (a single ad-hoc symbol, not part of any loaded index list) can reuse the exact
+// same scoring/momentum/breakout logic instead of duplicating it.
+function enrichOneStock(stock, rank, selectedIndex) {
+    const enriched = {
+        ...stock,
+        rank: rank,
+        score: calculateScore(stock),
+        // Use proper sector from stock universe
+        sector: stock.sector || 'Unknown',
+        industry: stock.industry || 'Unknown',
+        basicIndustry: stock.basicIndustry || 'Unknown',
+        index: selectedIndex
+    };
+    Object.assign(enriched, calculateMomentum(enriched));
+    enriched.breakout = isBreakoutCandidate(enriched);
+    return enriched;
 }
 
 // Offline cache: keeps the last successful live load in localStorage so the
@@ -555,6 +566,7 @@ function renderTableView() {
             <td><span class="status-badge status-${status}">${status === 'good' ? '🟢' : status === 'neutral' ? '🟡' : '🔴'} ${status.toUpperCase()}</span>${stock.breakout ? ' <span class="status-badge badge-breakout">🚀 BREAKOUT</span>' : ''}</td>
         `;
 
+        row.addEventListener('click', () => openStockDetail(stock));
         tbody.appendChild(row);
     });
 }
@@ -801,4 +813,256 @@ function exportToCSV() {
     a.href = url;
     a.download = `stock_screener_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
+}
+
+// ============================================================================
+// Per-ticker deep dive: fundamental + technical detail modal
+// ============================================================================
+
+// Builds the modal DOM once (mirrors LoadingManager's create-once/show-hide pattern)
+// and reuses it for every stock opened afterwards.
+function ensureStockDetailModal() {
+    if (stockDetailModalEl) return stockDetailModalEl;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.style.display = 'none';
+    overlay.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-header-info">
+                    <h2 id="modal-stock-name"></h2>
+                    <div class="modal-symbol" id="modal-stock-symbol"></div>
+                </div>
+                <div class="modal-header-price">
+                    <span class="modal-price" id="modal-stock-price"></span>
+                    <span id="modal-stock-change"></span>
+                </div>
+                <button class="modal-close-btn" id="modal-close-btn" title="Close">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section" id="modal-badge-section"></div>
+                <div class="modal-section">
+                    <h3>Fundamentals</h3>
+                    <div class="modal-metrics-grid" id="modal-fundamentals-grid"></div>
+                </div>
+                <div class="modal-section">
+                    <h3>Technicals</h3>
+                    <div id="modal-technicals-content">
+                        <div class="modal-chart-loading"><div class="loading-spinner"></div>Loading price history...</div>
+                    </div>
+                </div>
+                <div class="modal-disclaimer">
+                    This panel describes how the stock has behaved historically and where its price currently sits
+                    relative to its own recent range. It is not financial advice, a prediction, or a recommendation
+                    to buy or sell. Data may be delayed or incomplete — verify independently before making decisions.
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    overlay.querySelector('#modal-close-btn').addEventListener('click', closeStockDetail);
+    overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) closeStockDetail();
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && overlay.style.display !== 'none') closeStockDetail();
+    });
+
+    stockDetailModalEl = overlay;
+    return overlay;
+}
+
+function closeStockDetail() {
+    if (stockDetailModalEl) stockDetailModalEl.style.display = 'none';
+    stockDetailCurrentSymbol = null;
+}
+
+// Opens the modal for an already-enriched stock object (from the table, or from
+// lookupAndOpenStock's fallback path) and kicks off the async history/technicals load.
+function openStockDetail(stock) {
+    const modal = ensureStockDetailModal();
+    stockDetailCurrentSymbol = stock.symbol;
+
+    // Name/symbol can carry raw user input via the ticker-lookup fallback path, so they are
+    // set via textContent (never innerHTML) to rule out any HTML/script injection.
+    modal.querySelector('#modal-stock-name').textContent = stock.name || stock.symbol;
+    modal.querySelector('#modal-stock-symbol').textContent = stock.symbol;
+
+    const changeClass = (stock.changePercent || 0) >= 0 ? 'change-positive' : 'change-negative';
+    const changeSymbol = (stock.changePercent || 0) >= 0 ? '▲' : '▼';
+    modal.querySelector('#modal-stock-price').textContent = `₹${(stock.price || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+    const changeEl = modal.querySelector('#modal-stock-change');
+    changeEl.className = changeClass;
+    changeEl.textContent = `${changeSymbol} ${Math.abs(stock.changePercent || 0).toFixed(2)}%`;
+
+    const status = getStatus(stock);
+    modal.querySelector('#modal-badge-section').innerHTML = `
+        <span class="status-badge status-${status}">${status === 'good' ? '🟢' : status === 'neutral' ? '🟡' : '🔴'} ${status.toUpperCase()}</span>
+        ${stock.breakout ? ' <span class="status-badge badge-breakout">🚀 BREAKOUT</span>' : ''}
+        <span class="metric-item" style="display:inline-block; margin-left: 1rem;">
+            Off 52W Low: <strong>${(stock.offLow52w || 0).toFixed(1)}%</strong> &nbsp;·&nbsp;
+            Near 52W High: <strong>${(stock.nearHigh52w || 0).toFixed(1)}%</strong>
+        </span>
+    `;
+
+    modal.querySelector('#modal-fundamentals-grid').innerHTML = `
+        <div class="metric-item"><div class="metric-label">P/E</div><div class="metric-value">${stock.pe ? stock.pe.toFixed(1) : 'N/A'}</div></div>
+        <div class="metric-item"><div class="metric-label">P/B</div><div class="metric-value">${stock.pb ? stock.pb.toFixed(1) : 'N/A'}</div></div>
+        <div class="metric-item"><div class="metric-label">ROE</div><div class="metric-value">${stock.roe ? stock.roe.toFixed(1) + '%' : 'N/A'}</div></div>
+        <div class="metric-item"><div class="metric-label">Div Yield</div><div class="metric-value">${stock.divYield ? stock.divYield.toFixed(2) + '%' : 'N/A'}</div></div>
+        <div class="metric-item"><div class="metric-label">EPS</div><div class="metric-value">${stock.eps ? '₹' + stock.eps.toFixed(2) : 'N/A'}</div></div>
+        <div class="metric-item"><div class="metric-label">Book Value</div><div class="metric-value">${stock.bookValue ? '₹' + stock.bookValue.toFixed(2) : 'N/A'}</div></div>
+        <div class="metric-item"><div class="metric-label">Market Cap</div><div class="metric-value">₹${((stock.marketCap || 0) / 10000000).toFixed(0)} Cr</div></div>
+        <div class="metric-item"><div class="metric-label">52W Range</div><div class="metric-value">₹${(stock.low52w || 0).toLocaleString('en-IN')} – ₹${(stock.high52w || 0).toLocaleString('en-IN')}</div></div>
+    `;
+
+    modal.querySelector('#modal-technicals-content').innerHTML =
+        `<div class="modal-chart-loading"><div class="loading-spinner"></div>Loading price history...</div>`;
+
+    modal.style.display = 'flex';
+
+    loadStockDetailHistory(stock);
+}
+
+// Fetches historical bars for the modal's technicals/chart section and renders them.
+// Guards every render against stockDetailCurrentSymbol so a slow response for a stock the
+// user has since closed or navigated away from can't clobber what's currently on screen.
+async function loadStockDetailHistory(stock) {
+    const symbol = stock.symbol;
+    const bars = await yahooAPI.fetchHistory(symbol, '6mo', '1d');
+
+    if (stockDetailCurrentSymbol !== symbol) return; // user moved on before this resolved
+
+    const modal = stockDetailModalEl;
+    const content = modal.querySelector('#modal-technicals-content');
+
+    if (!bars) {
+        const offline = !navigator.onLine || window.dataSource !== 'live';
+        content.innerHTML = `<div class="modal-chart-error">${offline
+            ? '📴 Price history unavailable while offline — fundamentals and momentum above are still shown.'
+            : '⚠️ Price history unavailable right now — fundamentals and momentum above are still shown.'}</div>`;
+        return;
+    }
+
+    if (bars.length < 2) {
+        content.innerHTML = `<div class="modal-chart-error">Not enough price history available yet for a chart.</div>`;
+        return;
+    }
+
+    const sma20Series = calculateSMASeries(bars, 20);
+    const sma20 = calculateSMA(bars, 20);
+    const sma50 = calculateSMA(bars, 50);
+    const rsi14 = calculateRSI(bars, 14);
+    const volatility20 = calculateVolatility(bars, 20);
+    const latestClose = bars[bars.length - 1].close;
+    const trend = getTrendVsSMA(latestClose, sma20);
+    const trendText = trend
+        ? `Price is currently <strong>${trend}</strong> its 20-day average.`
+        : 'Not enough history yet to compare price to its 20-day average.';
+
+    content.innerHTML = `
+        <div class="modal-metrics-grid" style="margin-bottom: 1rem;">
+            <div class="metric-item"><div class="metric-label">SMA 20</div><div class="metric-value">${sma20 !== null ? '₹' + sma20.toFixed(2) : 'N/A'}</div></div>
+            <div class="metric-item"><div class="metric-label">SMA 50</div><div class="metric-value">${sma50 !== null ? '₹' + sma50.toFixed(2) : 'N/A'}</div></div>
+            <div class="metric-item"><div class="metric-label">RSI (14)</div><div class="metric-value">${rsi14 !== null ? rsi14.toFixed(1) : 'N/A'}</div></div>
+            <div class="metric-item"><div class="metric-label">Volatility (ann.)</div><div class="metric-value">${volatility20 !== null ? volatility20.toFixed(1) + '%' : 'N/A'}</div></div>
+        </div>
+        <p class="filter-hint">${trendText} This describes current price action only — it is not a prediction of future returns.</p>
+        <div id="modal-chart-container"></div>
+    `;
+
+    renderPriceHistoryChart(modal.querySelector('#modal-chart-container'), bars, sma20Series);
+}
+
+// Renders a price-history line chart as an inline SVG polyline (no charting library —
+// consistent with the rest of this app's hand-rolled charts, just suited to a continuous
+// ~126-point series instead of a handful of categorical bars).
+function renderPriceHistoryChart(containerEl, bars, smaSeries) {
+    const width = 600;
+    const height = 200;
+
+    const closes = bars.map(bar => bar.close);
+    const smaValues = (smaSeries || []).filter(v => v !== null && v !== undefined);
+    const allValues = closes.concat(smaValues);
+    const minVal = Math.min(...allValues);
+    const maxVal = Math.max(...allValues);
+    const range = (maxVal - minVal) || 1;
+
+    const toX = (i) => (i / (bars.length - 1)) * width;
+    const toY = (v) => height - ((v - minVal) / range) * height;
+
+    const pricePoints = closes.map((close, i) => `${toX(i).toFixed(2)},${toY(close).toFixed(2)}`).join(' ');
+
+    let smaPolyline = '';
+    if (smaSeries && smaValues.length >= 2) {
+        const smaPoints = smaSeries
+            .map((v, i) => (v === null || v === undefined) ? null : `${toX(i).toFixed(2)},${toY(v).toFixed(2)}`)
+            .filter(p => p !== null)
+            .join(' ');
+        smaPolyline = `<polyline class="sma-line" points="${smaPoints}" />`;
+    }
+
+    const startDate = new Date(bars[0].date).toLocaleDateString('en-IN');
+    const endDate = new Date(bars[bars.length - 1].date).toLocaleDateString('en-IN');
+
+    containerEl.innerHTML = `
+        <svg class="modal-chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+            <polyline class="price-line" points="${pricePoints}" />
+            ${smaPolyline}
+        </svg>
+        <div class="modal-chart-range">
+            <span>${startDate}</span>
+            <span>Range: ₹${minVal.toFixed(2)} – ₹${maxVal.toFixed(2)}</span>
+            <span>${endDate}</span>
+        </div>
+    `;
+}
+
+// Standalone ticker lookup: opens the deep-dive modal for any symbol, even one outside the
+// currently-loaded index filter. Checks the in-memory stock list first (no network call needed),
+// otherwise fetches fresh from Yahoo Finance directly.
+const TICKER_SYMBOL_PATTERN = /^[A-Z0-9&.-]{1,20}$/;
+
+async function lookupAndOpenStock(rawInput) {
+    const errorEl = document.getElementById('ticker-lookup-error');
+    errorEl.textContent = '';
+    errorEl.style.display = 'none';
+
+    const symbol = (rawInput || '').trim().toUpperCase();
+    if (!symbol) return;
+
+    if (!TICKER_SYMBOL_PATTERN.test(symbol)) {
+        errorEl.textContent = `"${rawInput}" doesn't look like a valid NSE symbol.`;
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    const existing = allStocks.find(s => s.symbol === symbol);
+    if (existing) {
+        openStockDetail(existing);
+        return;
+    }
+
+    const selectedIndex = document.getElementById('index-filter')?.value || '';
+    const data = await yahooAPI.fetchCompleteData(symbol);
+
+    if (!data) {
+        errorEl.textContent = `Could not find data for "${symbol}" — check the symbol and try again.`;
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    const stock = enrichOneStock({
+        symbol,
+        name: symbol,
+        sector: 'Unknown',
+        industry: 'Unknown',
+        basicIndustry: 'Unknown',
+        ...data
+    }, 0, selectedIndex);
+
+    openStockDetail(stock);
 }

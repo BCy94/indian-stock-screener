@@ -149,6 +149,15 @@
                         <input type="text" id="global-search" class="search-input" placeholder="Search stocks..."
                             oninput="applyFilters()">
                     </div>
+                    <div class="ticker-lookup-container">
+                        <input type="text" id="ticker-lookup-input" class="search-input"
+                            placeholder="Deep dive any symbol..."
+                            onkeydown="if (event.key === 'Enter') lookupAndOpenStock(this.value)">
+                        <button class="ticker-lookup-btn"
+                            onclick="lookupAndOpenStock(document.getElementById('ticker-lookup-input').value)"
+                            title="View fundamental + technical analysis">🔍</button>
+                        <div id="ticker-lookup-error" class="ticker-lookup-error"></div>
+                    </div>
                     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
                         <span id="theme-icon">🌙</span>
                     </button>
@@ -275,6 +284,7 @@
     </div>
 
     <!-- Real-Time Stock Data Integration -->
+    <script src="technical_indicators.js"></script>
     <script src="stock_universe.js"></script>
     <script src="yahoo_finance_api.js"></script>
     <script src="screener_script_realtime.js"></script>
