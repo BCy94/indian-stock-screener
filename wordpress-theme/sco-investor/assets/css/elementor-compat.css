@@ -1,0 +1,120 @@
+/*
+ * Elementor compatibility — bridges Elementor's container/section layout
+ * with the theme's CSS variable design system so SCI widgets look right
+ * whether they are on an Elementor page or a plain PHP template page.
+ */
+
+/* ── Inherit brand CSS variables inside Elementor sections ───────────── */
+.elementor-section,
+.elementor-container,
+.e-con,
+.e-con-inner {
+	--charcoal:   #14171F;
+	--ivory:      #F6F1E7;
+	--accent:     #C9A24B;
+	--accent-dim: rgba(201,162,75,.14);
+	--glass-bg:   rgba(255,255,255,.04);
+	--glass-border: rgba(201,162,75,.18);
+	--text-primary:   #F6F1E7;
+	--text-secondary: rgba(246,241,231,.65);
+}
+
+/* Light-mode override inside Elementor */
+[data-theme="light"] .elementor-section,
+[data-theme="light"] .e-con {
+	--text-primary:   #14171F;
+	--text-secondary: rgba(20,23,31,.65);
+	--glass-bg:       rgba(255,255,255,.72);
+}
+
+/* ── Hero widget ─────────────────────────────────────────────────────── */
+.sci-elementor-hero {
+	padding: 80px 0 60px;
+}
+.sci-elementor-hero .hero-body {
+	max-width: 680px;
+}
+.sci-elementor-hero .hero-trust {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-top: 20px;
+	font-size: 13px;
+	color: var(--text-secondary);
+}
+.sci-elementor-hero .hero-trust span {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+/* ── Stats widget ────────────────────────────────────────────────────── */
+.sci-elementor-stats {
+	/* inherits .stats-row from main.css */
+}
+
+/* ── Section headers inside widgets ─────────────────────────────────── */
+.sci-elementor-hero .section-header,
+.elementor-widget-sci_courses .section-header,
+.elementor-widget-sci_materials .section-header,
+.elementor-widget-sci_testimonials .section-header {
+	text-align: center;
+	margin-bottom: 2rem;
+}
+
+/* ── Card grids: fill Elementor column width ─────────────────────────── */
+.elementor-widget-sci_courses .card-grid,
+.elementor-widget-sci_materials .card-grid,
+.elementor-widget-sci_testimonials .testi-grid {
+	width: 100%;
+}
+
+/* Column count helpers (supplement main.css) */
+.card-grid--1 { grid-template-columns: 1fr; }
+.card-grid--2 { grid-template-columns: repeat(2, 1fr); }
+.card-grid--4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 900px) {
+	.card-grid--3,
+	.card-grid--4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+	.card-grid--1,
+	.card-grid--2,
+	.card-grid--3,
+	.card-grid--4 { grid-template-columns: 1fr; }
+}
+
+/* ── Testimonial grid ────────────────────────────────────────────────── */
+.testi-grid {
+	display: grid;
+	gap: 24px;
+}
+.testi-grid.card-grid--2 { grid-template-columns: repeat(2, 1fr); }
+.testi-grid.card-grid--3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 780px) {
+	.testi-grid.card-grid--3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 540px) {
+	.testi-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ── Calculator widget inside Elementor ──────────────────────────────── */
+.elementor-widget-sci_calculator .calc-block {
+	max-width: 100%;
+}
+
+/* ── Center helper used by widgets ──────────────────────────────────── */
+.elementor-widget .center {
+	text-align: center;
+}
+
+/* ── Elementor editor placeholder message ────────────────────────────── */
+.elementor-editor-active .sci-elementor-placeholder {
+	border: 2px dashed rgba(201,162,75,.4);
+	border-radius: 8px;
+	padding: 32px;
+	text-align: center;
+	color: rgba(201,162,75,.8);
+	font-size: 14px;
+}

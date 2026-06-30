@@ -27,3 +27,4 @@ require SCI_THEME_DIR . '/inc/block-styles.php';
 require SCI_THEME_DIR . '/inc/block-patterns.php';
 require SCI_THEME_DIR . '/inc/contact-form.php';
 require SCI_THEME_DIR . '/inc/widgets.php';
+require SCI_THEME_DIR . '/inc/elementor.php';
