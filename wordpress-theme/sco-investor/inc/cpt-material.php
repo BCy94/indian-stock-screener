@@ -119,5 +119,45 @@ function sci_register_material_meta() {
 		'sanitize_callback' => 'absint',
 		'auth_callback'     => $auth_callback,
 	]);
+
+	register_post_meta('material', '_sci_featured', [
+		'type'              => 'boolean',
+		'single'            => true,
+		'show_in_rest'      => true,
+		'default'           => false,
+		'sanitize_callback' => 'rest_sanitize_boolean',
+		'auth_callback'     => $auth_callback,
+	]);
 }
 add_action('init', 'sci_register_material_meta');
+
+function sci_material_admin_columns($columns) {
+	$new = [];
+	foreach ($columns as $key => $label) {
+		$new[$key] = $label;
+		if ($key === 'title') {
+			$new['sci_type']     = __('Type', 'sco-investor');
+			$new['sci_price']    = __('Price', 'sco-investor');
+			$new['sci_featured'] = '★';
+		}
+	}
+	return $new;
+}
+add_filter('manage_material_posts_columns', 'sci_material_admin_columns');
+
+function sci_material_admin_column_content($column, $post_id) {
+	if ($column === 'sci_type') {
+		$type  = get_post_meta($post_id, '_sci_material_type', true) ?: 'other';
+		$types = sci_material_types();
+		echo esc_html($types[$type] ?? $type);
+	}
+	if ($column === 'sci_price') {
+		$price = get_post_meta($post_id, '_sci_price', true);
+		echo $price !== '' ? esc_html('₹' . number_format((float) $price, 0)) : esc_html__('Free', 'sco-investor');
+	}
+	if ($column === 'sci_featured') {
+		$featured = get_post_meta($post_id, '_sci_featured', true);
+		echo $featured ? '<span title="' . esc_attr__('Featured', 'sco-investor') . '" style="color:#C9A24B;font-size:16px;">★</span>' : '<span style="color:#ccc;">☆</span>';
+	}
+}
+add_action('manage_material_posts_custom_column', 'sci_material_admin_column_content', 10, 2);

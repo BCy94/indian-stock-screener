@@ -49,6 +49,25 @@ function sci_register_course_cpt() {
 		'show_in_rest'      => true,
 		'rewrite'           => ['slug' => 'course-level'],
 	]);
+
+	register_taxonomy('course_category', ['course'], [
+		'labels' => [
+			'name'              => __('Course Categories', 'sco-investor'),
+			'singular_name'     => __('Course Category', 'sco-investor'),
+			'all_items'         => __('All Categories', 'sco-investor'),
+			'edit_item'         => __('Edit Category', 'sco-investor'),
+			'add_new_item'      => __('Add New Category', 'sco-investor'),
+			'new_item_name'     => __('New Category Name', 'sco-investor'),
+			'search_items'      => __('Search Categories', 'sco-investor'),
+			'parent_item'       => __('Parent Category', 'sco-investor'),
+			'parent_item_colon' => __('Parent Category:', 'sco-investor'),
+		],
+		'hierarchical'      => true,
+		'public'            => true,
+		'show_admin_column' => true,
+		'show_in_rest'      => true,
+		'rewrite'           => ['slug' => 'course-category'],
+	]);
 }
 add_action('init', 'sci_register_course_cpt');
 
@@ -102,5 +121,41 @@ function sci_register_course_meta() {
 	// see inc/commerce.php. Blank by default: a course with no linked
 	// product behaves exactly as it does today (disabled CTA).
 	register_post_meta('course', '_sci_product_id', $integer_field);
+
+	register_post_meta('course', '_sci_featured', [
+		'type'              => 'boolean',
+		'single'            => true,
+		'show_in_rest'      => true,
+		'default'           => false,
+		'sanitize_callback' => 'rest_sanitize_boolean',
+		'auth_callback'     => function () {
+			return current_user_can('edit_posts');
+		},
+	]);
 }
 add_action('init', 'sci_register_course_meta');
+
+function sci_course_admin_columns($columns) {
+	$new = [];
+	foreach ($columns as $key => $label) {
+		$new[$key] = $label;
+		if ($key === 'title') {
+			$new['sci_price']    = __('Price', 'sco-investor');
+			$new['sci_featured'] = '★';
+		}
+	}
+	return $new;
+}
+add_filter('manage_course_posts_columns', 'sci_course_admin_columns');
+
+function sci_course_admin_column_content($column, $post_id) {
+	if ($column === 'sci_price') {
+		$price = get_post_meta($post_id, '_sci_price', true);
+		echo $price !== '' ? esc_html('₹' . number_format((float) $price, 0)) : '—';
+	}
+	if ($column === 'sci_featured') {
+		$featured = get_post_meta($post_id, '_sci_featured', true);
+		echo $featured ? '<span title="' . esc_attr__('Featured', 'sco-investor') . '" style="color:#C9A24B;font-size:16px;">★</span>' : '<span style="color:#ccc;">☆</span>';
+	}
+}
+add_action('manage_course_posts_custom_column', 'sci_course_admin_column_content', 10, 2);

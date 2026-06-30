@@ -95,16 +95,39 @@ function sci_user_has_purchased($product_id) {
 }
 
 /**
+ * Whether any active WooCommerce Subscription for this user covers the
+ * given product. Returns false silently when WC Subscriptions is not
+ * installed (plugin not active) so callers need no feature-detection.
+ */
+function sci_subscription_grants_access($user_id, $product_id) {
+	if (!function_exists('wcs_get_users_subscriptions')) return false;
+	foreach (wcs_get_users_subscriptions($user_id) as $sub) {
+		if ($sub->get_status() !== 'active') continue;
+		foreach ($sub->get_items() as $item) {
+			if ((int) $item->get_product_id() === $product_id || (int) $item->get_variation_id() === $product_id) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+/**
  * The single access gate every course/material page, download link and
  * CTA button checks: open unless a purchasable product is actually
- * linked, in which case editors and buyers get through and everyone else
- * doesn't. A course/material with no linked product behaves exactly as
- * it does today — always accessible.
+ * linked, in which case editors, buyers, subscription holders, and users
+ * with a manual admin grant get through — everyone else doesn't.
+ * A course/material with no linked product behaves exactly as it does
+ * today — always accessible.
  */
 function sci_user_can_access($post_id) {
 	$product = sci_purchasable_product($post_id);
 	if (!$product) return true;
 	if (current_user_can('edit_post', $post_id)) return true;
+	if (!is_user_logged_in()) return false;
+	$uid = get_current_user_id();
+	if (get_user_meta($uid, '_sci_access_' . $post_id, true)) return true;
+	if (sci_subscription_grants_access($uid, $product->get_id())) return true;
 	return sci_user_has_purchased($product->get_id());
 }
 
@@ -325,13 +348,16 @@ function sci_account_query_vars($vars) {
 add_filter('query_vars', 'sci_account_query_vars');
 
 /**
- * IDs of published $post_type posts the current user owns: cross-
- * references every course/material's linked product against what
- * WooCommerce says they've actually bought.
+ * IDs of published $post_type posts the current user can access: covers
+ * purchases, active subscriptions, and manual admin grants so the My
+ * Courses / My Materials tabs show everything the user legitimately owns.
+ * Free items (no linked product) are intentionally excluded from this
+ * list — they're always accessible and don't need a "you own this" badge.
  */
 function sci_owned_post_ids($post_type) {
-	if (!is_user_logged_in() || !sci_has_woocommerce()) return [];
+	if (!is_user_logged_in()) return [];
 
+	$uid = get_current_user_id();
 	$candidates = get_posts([
 		'post_type'      => $post_type,
 		'post_status'    => 'publish',
@@ -343,7 +369,17 @@ function sci_owned_post_ids($post_type) {
 	$owned = [];
 	foreach ($candidates as $post_id) {
 		$product_id = sci_linked_product_id($post_id);
-		if ($product_id && sci_user_has_purchased($product_id)) {
+		if (!$product_id) continue;
+		if (get_user_meta($uid, '_sci_access_' . $post_id, true)) {
+			$owned[] = $post_id;
+			continue;
+		}
+		if (!sci_has_woocommerce()) continue;
+		if (sci_subscription_grants_access($uid, $product_id)) {
+			$owned[] = $post_id;
+			continue;
+		}
+		if (sci_user_has_purchased($product_id)) {
 			$owned[] = $post_id;
 		}
 	}

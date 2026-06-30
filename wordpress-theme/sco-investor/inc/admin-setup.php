@@ -221,9 +221,99 @@ function sci_render_setup_page() {
 				</div>
 			</div>
 
+			<!-- MEMBERS -->
+			<div class="postbox">
+				<div class="postbox-header"><h2 class="hndle">👥 <?php esc_html_e('7 — Members & Access Control', 'sco-investor'); ?></h2></div>
+				<div class="inside">
+					<p><?php esc_html_e('View all registered users, see which courses and materials each person has access to, and manually grant or revoke access without requiring a purchase.', 'sco-investor'); ?></p>
+					<ul>
+						<li>✓ <?php esc_html_e('List all members with their registration date, role, order count, and subscription status.', 'sco-investor'); ?></li>
+						<li>✓ <?php esc_html_e('Click any member to see a full access report — which courses/materials they own and how (purchase, subscription, or admin grant).', 'sco-investor'); ?></li>
+						<li>✓ <?php esc_html_e('Grant access to any course or material with one click — useful for comps, beta testers, or support resolutions.', 'sco-investor'); ?></li>
+						<li>✓ <?php esc_html_e('Revoke manually-granted access at any time without touching their purchase history.', 'sco-investor'); ?></li>
+						<li>✓ <?php esc_html_e('Export the full member list as a CSV file for reporting or email campaigns.', 'sco-investor'); ?></li>
+					</ul>
+					<p>
+						<a href="<?php echo esc_url(admin_url('admin.php?page=sci-members')); ?>" class="button button-primary"><?php esc_html_e('View Members', 'sco-investor'); ?></a>
+					</p>
+				</div>
+			</div>
+
+			<!-- COUPONS -->
+			<div class="postbox">
+				<div class="postbox-header"><h2 class="hndle">🏷️ <?php esc_html_e('8 — Discount Coupons', 'sco-investor'); ?></h2></div>
+				<div class="inside">
+					<?php if ($has_woo) : ?>
+						<p><?php esc_html_e('Create discount coupons for your courses and materials from WooCommerce\'s built-in coupon system. No extra plugin needed.', 'sco-investor'); ?></p>
+						<ol class="sci-steps">
+							<li class="sci-step--todo">
+								<strong><?php esc_html_e('Go to Marketing → Coupons', 'sco-investor'); ?></strong><br>
+								<span class="description"><?php esc_html_e('(In older WooCommerce versions this is WooCommerce → Coupons.)', 'sco-investor'); ?></span><br>
+								<a href="<?php echo esc_url(admin_url('edit.php?post_type=shop_coupon')); ?>" class="button button-primary" style="margin-top:8px;"><?php esc_html_e('Go to Coupons', 'sco-investor'); ?></a>
+							</li>
+							<li class="sci-step--todo">
+								<strong><?php esc_html_e('Click "Add coupon" and enter a code', 'sco-investor'); ?></strong><br>
+								<span class="description"><?php esc_html_e('Use any code — e.g. LAUNCH50, WELCOME20. Share this code with your students and they enter it at checkout.', 'sco-investor'); ?></span>
+							</li>
+							<li class="sci-step--todo">
+								<strong><?php esc_html_e('Choose the discount type', 'sco-investor'); ?></strong><br>
+								<span class="description">
+									<?php esc_html_e('"Percentage discount" (e.g. 20% off) or "Fixed cart discount" (e.g. ₹500 off). For courses, "Percentage" is usually easier since the price can change.', 'sco-investor'); ?>
+								</span>
+							</li>
+							<li class="sci-step--todo">
+								<strong><?php esc_html_e('Set usage limits', 'sco-investor'); ?></strong><br>
+								<span class="description"><?php esc_html_e('Under "Usage limits": set "Usage limit per user: 1" so each person can only use the coupon once. Set a total usage limit if it\'s for a limited-time offer.', 'sco-investor'); ?></span>
+							</li>
+							<li class="sci-step--todo">
+								<strong><?php esc_html_e('Restrict to specific products (optional)', 'sco-investor'); ?></strong><br>
+								<span class="description"><?php esc_html_e('Under "Usage restriction": add the specific WooCommerce products this coupon applies to. Leave blank to allow on any product.', 'sco-investor'); ?></span>
+							</li>
+						</ol>
+					<?php else : ?>
+						<p><?php esc_html_e('Coupon management is built into WooCommerce. Install and activate WooCommerce (Step 2 above) to create percentage or fixed-amount discount codes for your courses and materials.', 'sco-investor'); ?></p>
+						<p><a href="<?php echo esc_url(admin_url('plugin-install.php?s=woocommerce&tab=search&type=term')); ?>" class="button button-primary"><?php esc_html_e('Install WooCommerce', 'sco-investor'); ?></a></p>
+					<?php endif; ?>
+				</div>
+			</div>
+
+			<!-- SUBSCRIPTIONS -->
+			<div class="postbox">
+				<div class="postbox-header"><h2 class="hndle">🔁 <?php esc_html_e('9 — Recurring Subscriptions', 'sco-investor'); ?></h2></div>
+				<div class="inside">
+					<p><?php esc_html_e('Want to sell monthly/yearly access to your content instead of (or in addition to) one-time purchases? You need the WooCommerce Subscriptions plugin.', 'sco-investor'); ?></p>
+					<?php
+					$has_wcs = function_exists('wcs_get_users_subscriptions');
+					if ($has_wcs) :
+					?>
+						<div class="notice notice-success inline"><p>✓ <?php esc_html_e('WooCommerce Subscriptions is active. When a user holds an active subscription that includes a linked product, the theme automatically unlocks that course or material for them — no manual steps needed.', 'sco-investor'); ?></p></div>
+					<?php else : ?>
+						<div class="notice notice-info inline"><p><?php esc_html_e('WooCommerce Subscriptions is not yet active. Without it, all sales are one-time purchases.', 'sco-investor'); ?></p></div>
+					<?php endif; ?>
+					<ol class="sci-steps">
+						<li class="<?php echo $has_wcs ? 'sci-step--done' : 'sci-step--todo'; ?>">
+							<strong><?php esc_html_e('Install WooCommerce Subscriptions', 'sco-investor'); ?></strong>
+							<?php if ($has_wcs) : ?>
+								<span class="sci-badge"><?php esc_html_e('✓ Active', 'sco-investor'); ?></span>
+							<?php endif; ?>
+							<br>
+							<span class="description"><?php esc_html_e('WooCommerce Subscriptions is a paid plugin from WooCommerce.com (~$199/yr). It is the most reliable, widely-used subscription engine for WooCommerce. Purchase, download, and install it as a normal WordPress plugin.', 'sco-investor'); ?></span>
+						</li>
+						<li class="sci-step--todo">
+							<strong><?php esc_html_e('Create a Subscription product', 'sco-investor'); ?></strong><br>
+							<span class="description"><?php esc_html_e('After installing: go to Products → Add New → set product type to "Simple subscription". Set the billing interval (e.g. monthly), price, and trial period if any. Mark it as Virtual.', 'sco-investor'); ?></span>
+						</li>
+						<li class="sci-step--todo">
+							<strong><?php esc_html_e('Link the subscription product to your courses/materials', 'sco-investor'); ?></strong><br>
+							<span class="description"><?php esc_html_e('Edit a Course or Material → "Linked Product" dropdown → select the subscription product. The theme will automatically grant access to all users with an active subscription to that product.', 'sco-investor'); ?></span>
+						</li>
+					</ol>
+				</div>
+			</div>
+
 			<!-- BLOG -->
 			<div class="postbox">
-				<div class="postbox-header"><h2 class="hndle">✍️ <?php esc_html_e('7 — Blog & Reading Settings', 'sco-investor'); ?></h2></div>
+				<div class="postbox-header"><h2 class="hndle">✍️ <?php esc_html_e('10 — Blog & Reading Settings', 'sco-investor'); ?></h2></div>
 				<div class="inside">
 					<p><?php esc_html_e('Set your homepage to the static front page and a separate page as your Blog listing:', 'sco-investor'); ?></p>
 					<ol>

@@ -25,6 +25,7 @@ function sci_render_course_meta_box($post) {
 	$badge          = get_post_meta($post->ID, '_sci_badge', true);
 	$level_label    = get_post_meta($post->ID, '_sci_level_label', true);
 	$linked_product = (int) get_post_meta($post->ID, '_sci_product_id', true);
+	$featured       = (bool) get_post_meta($post->ID, '_sci_featured', true);
 	?>
 	<table class="form-table">
 		<tr>
@@ -76,6 +77,15 @@ function sci_render_course_meta_box($post) {
 				<?php endif; ?>
 			</td>
 		</tr>
+		<tr>
+			<th><?php esc_html_e('Featured on Homepage', 'sco-investor'); ?></th>
+			<td>
+				<label>
+					<input type="checkbox" name="sci_featured" value="1" <?php checked($featured); ?>>
+					<?php esc_html_e('Show this course in the featured/homepage course section', 'sco-investor'); ?>
+				</label>
+			</td>
+		</tr>
 	</table>
 	<p class="description"><?php esc_html_e('Set the Course Level(s) from the box in the sidebar.', 'sco-investor'); ?></p>
 	<?php
@@ -84,14 +94,15 @@ function sci_render_course_meta_box($post) {
 function sci_render_material_meta_box($post) {
 	wp_nonce_field('sci_save_material_meta', 'sci_material_meta_nonce');
 
-	$type          = get_post_meta($post->ID, '_sci_material_type', true) ?: 'other';
-	$file_id       = (int) get_post_meta($post->ID, '_sci_file', true);
-	$external_url  = get_post_meta($post->ID, '_sci_external_url', true);
-	$badge         = get_post_meta($post->ID, '_sci_badge', true);
-	$price         = get_post_meta($post->ID, '_sci_price', true);
+	$type           = get_post_meta($post->ID, '_sci_material_type', true) ?: 'other';
+	$file_id        = (int) get_post_meta($post->ID, '_sci_file', true);
+	$external_url   = get_post_meta($post->ID, '_sci_external_url', true);
+	$badge          = get_post_meta($post->ID, '_sci_badge', true);
+	$price          = get_post_meta($post->ID, '_sci_price', true);
 	$price_original = get_post_meta($post->ID, '_sci_price_original', true);
 	$linked_product = (int) get_post_meta($post->ID, '_sci_product_id', true);
-	$file_name     = $file_id ? basename(get_attached_file($file_id)) : '';
+	$featured       = (bool) get_post_meta($post->ID, '_sci_featured', true);
+	$file_name      = $file_id ? basename(get_attached_file($file_id)) : '';
 	?>
 	<table class="form-table">
 		<tr>
@@ -156,6 +167,15 @@ function sci_render_material_meta_box($post) {
 				<?php else : ?>
 					<p class="description"><?php esc_html_e('Install and activate WooCommerce to sell this with a real payment gateway (Razorpay, Stripe, PayPal, etc.).', 'sco-investor'); ?></p>
 				<?php endif; ?>
+			</td>
+		</tr>
+		<tr>
+			<th><?php esc_html_e('Featured on Homepage', 'sco-investor'); ?></th>
+			<td>
+				<label>
+					<input type="checkbox" name="sci_featured" value="1" <?php checked($featured); ?>>
+					<?php esc_html_e('Show this material in the featured/homepage materials section', 'sco-investor'); ?>
+				</label>
 			</td>
 		</tr>
 	</table>
@@ -295,6 +315,7 @@ function sci_save_course_meta($post_id) {
 	if (isset($_POST['sci_product_id'])) {
 		update_post_meta($post_id, '_sci_product_id', absint($_POST['sci_product_id']));
 	}
+	update_post_meta($post_id, '_sci_featured', isset($_POST['sci_featured']) ? '1' : '');
 }
 add_action('save_post_course', 'sci_save_course_meta');
 
@@ -327,5 +348,6 @@ function sci_save_material_meta($post_id) {
 	if (isset($_POST['sci_product_id'])) {
 		update_post_meta($post_id, '_sci_product_id', absint($_POST['sci_product_id']));
 	}
+	update_post_meta($post_id, '_sci_featured', isset($_POST['sci_featured']) ? '1' : '');
 }
 add_action('save_post_material', 'sci_save_material_meta');
