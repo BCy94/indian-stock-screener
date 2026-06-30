@@ -73,6 +73,64 @@ class YahooFinanceAPI {
         }
     }
 
+    // Fetch historical daily OHLC bars (for the deep-dive chart/technical analysis).
+    // Separate from the 5-minute in-memory snapshot cache above — historical bars don't
+    // change once a trading day closes, so they're cached in localStorage with a
+    // same-day TTL instead (see saveHistoryCache/loadHistoryCache below).
+    async fetchHistory(symbol, range = '6mo', interval = '1d') {
+        const cached = loadHistoryCache(symbol, range, interval);
+        if (cached) return cached;
+
+        try {
+            const url = `${this.baseURL}/v8/finance/chart/${symbol}.NS?interval=${interval}&range=${range}`;
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                console.warn(`Failed to fetch history for ${symbol}: ${response.status}`);
+                return null;
+            }
+
+            const data = await response.json();
+            const bars = this.parseHistoryData(data, symbol);
+
+            if (bars) saveHistoryCache(symbol, range, interval, bars);
+            return bars;
+        } catch (error) {
+            console.error(`Error fetching history for ${symbol}:`, error);
+            return null;
+        }
+    }
+
+    // Parse a chart response requested with range > 1d into an ascending array of
+    // { date, open, high, low, close, volume } bars. Returns null if the response shape
+    // is unusable — distinct from a legitimately empty [] for a valid but dataless range.
+    parseHistoryData(json, symbol) {
+        try {
+            const result = json.chart.result[0];
+            const timestamps = result.timestamp;
+            const quote = result.indicators.quote[0];
+
+            if (!timestamps || !quote) return null;
+
+            return timestamps
+                .map((ts, i) => ({
+                    date: ts * 1000,
+                    open: quote.open[i],
+                    high: quote.high[i],
+                    low: quote.low[i],
+                    close: quote.close[i],
+                    volume: quote.volume[i]
+                }))
+                // Yahoo returns null closes for holidays / in-progress sessions inside the
+                // range — drop them rather than fabricating a 0/flat price point on the chart.
+                .filter(bar => bar.close !== null && bar.close !== undefined)
+                .sort((a, b) => a.date - b.date);
+        } catch (error) {
+            console.error(`Error parsing history for ${symbol}:`, error);
+            return null;
+        }
+    }
+
     // Fetch fundamentals (P/E, P/B, etc.) from Yahoo Finance
     async fetchFundamentals(symbol) {
         try {
@@ -208,6 +266,44 @@ class YahooFinanceAPI {
     }
 }
 
+// Historical-bar cache: localStorage (survives reloads, unlike the in-memory snapshot
+// cache inside YahooFinanceAPI) with a same-day TTL — once a trading day closes, its bars
+// don't change, so one fetch per symbol/range per calendar day is enough. Deliberately not
+// modeling NSE trading hours/holidays here; a coarse "same calendar day" check is enough
+// for end-of-day technical analysis and avoids hardcoding a market calendar to maintain.
+const HISTORY_CACHE_PREFIX = 'historyCache_v1_';
+
+function isSameLocalDate(a, b) {
+    return a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate();
+}
+
+function saveHistoryCache(symbol, range, interval, bars) {
+    try {
+        const key = `${HISTORY_CACHE_PREFIX}${symbol}_${range}_${interval}`;
+        localStorage.setItem(key, JSON.stringify({ bars, fetchedAt: Date.now(), range, interval }));
+    } catch (error) {
+        console.warn('Could not save history cache:', error);
+    }
+}
+
+function loadHistoryCache(symbol, range, interval) {
+    try {
+        const key = `${HISTORY_CACHE_PREFIX}${symbol}_${range}_${interval}`;
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+
+        const entry = JSON.parse(raw);
+        if (!isSameLocalDate(new Date(entry.fetchedAt), new Date())) return null;
+
+        return entry.bars;
+    } catch (error) {
+        console.warn('Could not read history cache:', error);
+        return null;
+    }
+}
+
 // Loading indicator management
 class LoadingManager {
     constructor() {
@@ -267,5 +363,5 @@ class LoadingManager {
 
 // Export for use
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { YahooFinanceAPI, LoadingManager };
+    module.exports = { YahooFinanceAPI, LoadingManager, saveHistoryCache, loadHistoryCache };
 }

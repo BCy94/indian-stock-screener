@@ -212,6 +212,46 @@ body {
     color: var(--text-primary);
 }
 
+.ticker-lookup-container {
+    position: relative;
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+.ticker-lookup-container .search-input {
+    width: 200px;
+}
+
+.ticker-lookup-btn {
+    padding: 0.6rem 0.8rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.ticker-lookup-btn:hover {
+    background: var(--border-color);
+}
+
+.ticker-lookup-error {
+    display: none;
+    position: absolute;
+    top: 110%;
+    left: 0;
+    right: 0;
+    padding: 0.4rem 0.6rem;
+    background: #f8d7da;
+    color: #842029;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    z-index: 20;
+}
+
 .theme-toggle {
     padding: 0.6rem 1rem;
     background: var(--bg-primary);
@@ -255,6 +295,49 @@ body {
     50% {
         opacity: 0.5;
     }
+}
+
+.status-dot.status-dot-offline {
+    background: var(--warning-color);
+}
+
+.status-dot.status-dot-error {
+    background: var(--danger-color);
+    animation: none;
+}
+
+.connection-banner {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 1.5rem;
+    background: #fff3cd;
+    color: #664d03;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.8rem;
+}
+
+.connection-banner.error {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.connection-banner button {
+    padding: 0.35rem 0.8rem;
+    border: none;
+    border-radius: 4px;
+    background: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.connection-banner button:hover {
+    opacity: 0.9;
 }
 
 /* Summary Stats */
@@ -404,6 +487,7 @@ body {
 
 .stocks-table tbody tr {
     border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
 }
 
 .stocks-table tbody tr:hover {
@@ -458,6 +542,24 @@ body {
 .status-bad {
     background: #f8d7da;
     color: #842029;
+}
+
+.badge-breakout {
+    background: #ffe5d0;
+    color: #7a3e00;
+    margin-left: 0.25rem;
+}
+
+.momentum-high {
+    color: #fd7e14;
+    font-weight: 700;
+}
+
+.filter-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-bottom: 0.6rem;
 }
 
 /* Card View */
@@ -667,4 +769,153 @@ body {
     font-size: 0.875rem;
     color: var(--text-secondary);
     font-weight: 600;
+}
+
+/* Stock Detail Modal (deep-dive view) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1.5rem;
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header-info h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.modal-header-info .modal-symbol {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.modal-header-price {
+    text-align: right;
+}
+
+.modal-header-price .modal-price {
+    font-size: 1.4rem;
+    font-weight: 700;
+    display: block;
+}
+
+.modal-close-btn {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.modal-close-btn:hover {
+    background: var(--border-color);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.modal-section h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.modal-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+}
+
+.modal-chart-loading,
+.modal-chart-error {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.5rem 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.modal-chart-loading .loading-spinner {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    border-width: 3px;
+}
+
+.modal-chart-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.modal-chart-svg .price-line {
+    fill: none;
+    stroke: var(--primary-color);
+    stroke-width: 2;
+}
+
+.modal-chart-svg .sma-line {
+    fill: none;
+    stroke: var(--text-secondary);
+    stroke-width: 1.5;
+    stroke-dasharray: 4, 3;
+}
+
+.modal-chart-range {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+
+.modal-disclaimer {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
 }

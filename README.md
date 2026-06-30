@@ -14,13 +14,14 @@ A professional, real-time stock screener for Indian markets with data from Yahoo
 - **Multiple Views**: Table view and interactive charts
 - **Dark Mode**: Toggle between light and dark themes
 - **Auto-Refresh**: Prices update automatically every 5 minutes
+- **Offline-Capable**: Caches the last successful price load in your browser, so the screener keeps working (read-only) without internet — open it anywhere, anytime, including straight from a local file
 - **Performance Indicators**: Good/Neutral/Bad status for each stock
 - **CSV Export**: Download filtered results
 - **Responsive Design**: Works on desktop and mobile
 
 ## 🚀 Live Demo
 
-Visit: `https://YOUR_USERNAME.github.io/indian-stock-screener/`
+Visit: `https://bcy94.github.io/indian-stock-screener/` (requires GitHub Pages to be enabled for this repo — see Local Development below for running it yourself in the meantime)
 
 ## 📊 Stock Data
 
@@ -63,7 +64,7 @@ python3 -m http.server 8000
 open http://localhost:8000
 ```
 
-**Note**: Opening `index.html` directly won't work due to CORS restrictions. You must use a local server.
+**Note**: For live, real-time prices, serve this over HTTP/HTTPS (a local server, or any static host) — browsers block direct `fetch()` calls to Yahoo Finance from `file://` pages. Opening `index.html` directly still works, but shows only whatever was last cached on that device (see Offline Support below) until you load it once over HTTP/HTTPS.
 
 ## 📖 Usage
 
@@ -100,6 +101,15 @@ Uses official NSE 4-tier classification:
 
 Stock prices automatically refresh every 5 minutes to keep data current.
 
+## 📴 Offline Support
+
+The screener caches the last successful price load in your browser's local storage:
+
+- Load it once over http/https (hosted, or via a local server) and it keeps working offline after that at that same address — close the tab, lose your connection, or reopen later, and your last data is still there. Browser storage is isolated per origin, so this doesn't carry over to double-clicking the HTML file directly (see Known Issues).
+- A banner at the top of the page appears whenever you're viewing cached/offline data instead of live prices, and shows how old that data is.
+- Going back online automatically triggers a fresh live refresh.
+- If there's no cached data yet and no connection (e.g. the very first time you open it with no internet), you'll see a clear message instead of a blank screen — connect once, then click Retry.
+
 ## 🌙 Dark Mode
 
 Toggle between light and dark themes. Preference is saved in browser.
@@ -114,7 +124,7 @@ Optimized for:
 
 ## 🐛 Known Issues
 
-- **CORS**: Must be served via HTTP/HTTPS (not file://)
+- **Live prices need HTTP/HTTPS**: browsers block this app's `fetch()` calls to Yahoo Finance from a `file://` page (a built-in browser restriction, not specific to this app). `file://` is also its own storage origin, separate from any `http(s)://` address, so it can't inherit a cache saved while served over HTTP/HTTPS either. Opening `index.html` directly still works, but shows "no data available" on a fresh profile, since a `file://` page starts with no cache of its own and can never fetch live data to fill it — for live prices and durable offline caching, serve it over a local server or use the hosted version instead.
 - **Rate Limiting**: Yahoo Finance may limit requests if too frequent
 - **Data Accuracy**: Prices are indicative, verify before trading
 
