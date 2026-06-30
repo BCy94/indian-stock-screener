@@ -120,13 +120,145 @@ function sci_customize_register($wp_customize) {
 	]);
 
 	/**
+	 * Homepage — Hero Section.
+	 */
+	$wp_customize->add_section('sci_hero', [
+		'title'    => __('Homepage — Hero', 'sco-investor'),
+		'priority' => 33,
+	]);
+
+	$hero_settings = [
+		'sci_hero_eyebrow'      => ['label' => __('Eyebrow text (small label above heading)', 'sco-investor'), 'default' => 'Now enrolling — Summer 2026 cohort', 'type' => 'text'],
+		'sci_hero_heading'      => ['label' => __('Main heading', 'sco-investor'),                            'default' => 'Invest with clarity, not noise.', 'type' => 'text'],
+		'sci_hero_heading_accent' => ['label' => __('Accented word in heading (shown in gold)', 'sco-investor'), 'default' => 'clarity', 'type' => 'text'],
+		'sci_hero_lead'         => ['label' => __('Lead paragraph', 'sco-investor'),                         'default' => 'Practical courses, research materials and tools for Indian equity investors — built from real portfolio experience, not recycled YouTube hype.', 'type' => 'textarea'],
+		'sci_hero_cta1_text'    => ['label' => __('Primary button text', 'sco-investor'),                    'default' => 'Explore Courses', 'type' => 'text'],
+		'sci_hero_cta1_url'     => ['label' => __('Primary button URL (leave blank to auto-detect courses page)', 'sco-investor'), 'default' => '', 'type' => 'url'],
+		'sci_hero_cta2_text'    => ['label' => __('Secondary button text', 'sco-investor'),                  'default' => 'Browse Free Materials', 'type' => 'text'],
+		'sci_hero_cta2_url'     => ['label' => __('Secondary button URL (leave blank to auto-detect materials page)', 'sco-investor'), 'default' => '', 'type' => 'url'],
+		'sci_hero_trust_1'      => ['label' => __('Trust badge 1', 'sco-investor'),                         'default' => '★★★★★ 4.9/5 avg. rating', 'type' => 'text'],
+		'sci_hero_trust_2'      => ['label' => __('Trust badge 2', 'sco-investor'),                         'default' => '10,000+ investors taught', 'type' => 'text'],
+		'sci_hero_trust_3'      => ['label' => __('Trust badge 3', 'sco-investor'),                         'default' => 'Zero hype, 100% practical', 'type' => 'text'],
+	];
+	foreach ($hero_settings as $key => $cfg) {
+		$sanitize = $cfg['type'] === 'url' ? 'sanitize_url' : ($cfg['type'] === 'textarea' ? 'sanitize_textarea_field' : 'sanitize_text_field');
+		$wp_customize->add_setting($key, ['default' => $cfg['default'], 'sanitize_callback' => $sanitize, 'transport' => 'refresh']);
+		$wp_customize->add_control($key, ['section' => 'sci_hero', 'label' => $cfg['label'], 'type' => $cfg['type']]);
+	}
+
+	/**
+	 * Homepage — Stats Row.
+	 */
+	$wp_customize->add_section('sci_stats', [
+		'title'    => __('Homepage — Stats Row', 'sco-investor'),
+		'priority' => 34,
+	]);
+
+	$stats_defaults = [
+		1 => ['count' => '10000', 'suffix' => '+',     'decimals' => '0', 'label' => 'Investors Taught'],
+		2 => ['count' => '50',    'suffix' => '+',     'decimals' => '0', 'label' => 'Stocks Tracked Live'],
+		3 => ['count' => '12',    'suffix' => '+ yrs', 'decimals' => '0', 'label' => 'Market Experience'],
+		4 => ['count' => '4.9',   'suffix' => '/5',    'decimals' => '1', 'label' => 'Average Rating'],
+	];
+	foreach ($stats_defaults as $n => $d) {
+		$wp_customize->add_setting("sci_stat_{$n}_count",    ['default' => $d['count'],    'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh']);
+		$wp_customize->add_setting("sci_stat_{$n}_suffix",   ['default' => $d['suffix'],   'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh']);
+		$wp_customize->add_setting("sci_stat_{$n}_decimals", ['default' => $d['decimals'], 'sanitize_callback' => 'absint',              'transport' => 'refresh']);
+		$wp_customize->add_setting("sci_stat_{$n}_label",    ['default' => $d['label'],    'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh']);
+		/* translators: %d is the stat number (1–4) */
+		$wp_customize->add_control("sci_stat_{$n}_count",    ['section' => 'sci_stats', 'label' => sprintf(__('Stat %d — Number', 'sco-investor'), $n), 'type' => 'text']);
+		$wp_customize->add_control("sci_stat_{$n}_suffix",   ['section' => 'sci_stats', 'label' => sprintf(__('Stat %d — Suffix (e.g. + or /5)', 'sco-investor'), $n), 'type' => 'text']);
+		$wp_customize->add_control("sci_stat_{$n}_decimals", ['section' => 'sci_stats', 'label' => sprintf(__('Stat %d — Decimal places (0, 1 or 2)', 'sco-investor'), $n), 'type' => 'number', 'input_attrs' => ['min' => 0, 'max' => 2]]);
+		$wp_customize->add_control("sci_stat_{$n}_label",    ['section' => 'sci_stats', 'label' => sprintf(__('Stat %d — Label', 'sco-investor'), $n), 'type' => 'text']);
+	}
+
+	/**
+	 * Homepage — Why Us / Features Section.
+	 */
+	$wp_customize->add_section('sci_features', [
+		'title'    => __('Homepage — Why Us Section', 'sco-investor'),
+		'priority' => 35,
+	]);
+
+	$features_text = [
+		'sci_features_eyebrow'  => ['label' => __('Eyebrow text', 'sco-investor'),        'default' => 'Why So Called Investor',                                                                             'type' => 'text'],
+		'sci_features_heading'  => ['label' => __('Section heading', 'sco-investor'),     'default' => 'Built different from typical "finfluencer" content',                                                  'type' => 'text'],
+		'sci_features_desc'     => ['label' => __('Section description', 'sco-investor'), 'default' => 'No prediction calls, no paid pumps — just frameworks you can actually apply to your own portfolio.',  'type' => 'textarea'],
+		'sci_feature_1_title'   => ['label' => __('Card 1 — Title', 'sco-investor'),      'default' => 'Practical Curriculum',                                                                                'type' => 'text'],
+		'sci_feature_1_desc'    => ['label' => __('Card 1 — Description', 'sco-investor'),'default' => 'Step-by-step frameworks for fundamental and technical analysis you can use the same day you learn them.', 'type' => 'textarea'],
+		'sci_feature_2_title'   => ['label' => __('Card 2 — Title', 'sco-investor'),      'default' => 'Real Portfolio Breakdowns',                                                                           'type' => 'text'],
+		'sci_feature_2_desc'    => ['label' => __('Card 2 — Description', 'sco-investor'),'default' => 'Live case studies and teardowns of actual Indian companies — the good, the bad, and the red flags.',  'type' => 'textarea'],
+		'sci_feature_3_title'   => ['label' => __('Card 3 — Title', 'sco-investor'),      'default' => 'Lifetime Access & Community',                                                                         'type' => 'text'],
+		'sci_feature_3_desc'    => ['label' => __('Card 3 — Description', 'sco-investor'),'default' => 'One-time purchase, lifetime updates, plus a private community to ask questions and track progress together.', 'type' => 'textarea'],
+	];
+	foreach ($features_text as $key => $cfg) {
+		$sanitize = $cfg['type'] === 'textarea' ? 'sanitize_textarea_field' : 'sanitize_text_field';
+		$wp_customize->add_setting($key, ['default' => $cfg['default'], 'sanitize_callback' => $sanitize, 'transport' => 'refresh']);
+		$wp_customize->add_control($key, ['section' => 'sci_features', 'label' => $cfg['label'], 'type' => $cfg['type']]);
+	}
+
+	/**
+	 * Homepage — Testimonials Section heading.
+	 */
+	$wp_customize->add_section('sci_testimonials_section', [
+		'title'    => __('Homepage — Testimonials Section', 'sco-investor'),
+		'priority' => 36,
+	]);
+	$wp_customize->add_setting('sci_testi_eyebrow', ['default' => 'Student Feedback', 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh']);
+	$wp_customize->add_control('sci_testi_eyebrow', ['section' => 'sci_testimonials_section', 'label' => __('Eyebrow text', 'sco-investor'), 'type' => 'text']);
+	$wp_customize->add_setting('sci_testi_heading', ['default' => 'What investors say', 'sanitize_callback' => 'sanitize_text_field', 'transport' => 'refresh']);
+	$wp_customize->add_control('sci_testi_heading', ['section' => 'sci_testimonials_section', 'label' => __('Section heading', 'sco-investor'), 'type' => 'text']);
+	$wp_customize->add_setting('sci_testi_desc', ['default' => '', 'sanitize_callback' => 'sanitize_textarea_field', 'transport' => 'refresh']);
+	$wp_customize->add_control('sci_testi_desc', ['section' => 'sci_testimonials_section', 'label' => __('Section description (optional)', 'sco-investor'), 'type' => 'textarea']);
+
+	/**
+	 * Homepage — CTA Band.
+	 */
+	$wp_customize->add_section('sci_cta_band', [
+		'title'    => __('Homepage — CTA Band', 'sco-investor'),
+		'priority' => 37,
+	]);
+	$cta_settings = [
+		'sci_cta_heading'   => ['label' => __('Heading', 'sco-investor'),                             'default' => 'Ready to invest with confidence?',                                           'type' => 'text'],
+		'sci_cta_desc'      => ['label' => __('Description', 'sco-investor'),                         'default' => 'Join thousands of Indian investors learning to read businesses, not just stock tickers.', 'type' => 'textarea'],
+		'sci_cta_btn1_text' => ['label' => __('Button 1 text', 'sco-investor'),                       'default' => 'Explore Courses',                                                            'type' => 'text'],
+		'sci_cta_btn1_url'  => ['label' => __('Button 1 URL (blank = courses archive)', 'sco-investor'), 'default' => '',                                                                        'type' => 'url'],
+		'sci_cta_btn2_text' => ['label' => __('Button 2 text', 'sco-investor'),                       'default' => 'Talk to Us',                                                                 'type' => 'text'],
+		'sci_cta_btn2_url'  => ['label' => __('Button 2 URL (blank = contact page)', 'sco-investor'),  'default' => '',                                                                          'type' => 'url'],
+	];
+	foreach ($cta_settings as $key => $cfg) {
+		$sanitize = $cfg['type'] === 'url' ? 'sanitize_url' : ($cfg['type'] === 'textarea' ? 'sanitize_textarea_field' : 'sanitize_text_field');
+		$wp_customize->add_setting($key, ['default' => $cfg['default'], 'sanitize_callback' => $sanitize, 'transport' => 'refresh']);
+		$wp_customize->add_control($key, ['section' => 'sci_cta_band', 'label' => $cfg['label'], 'type' => $cfg['type']]);
+	}
+
+	/**
+	 * Footer content.
+	 */
+	$wp_customize->add_section('sci_footer', [
+		'title'    => __('Footer', 'sco-investor'),
+		'priority' => 38,
+	]);
+	$footer_settings = [
+		'sci_footer_tagline'      => ['label' => __('Brand tagline (below logo)', 'sco-investor'),      'default' => 'Honest, practical investing education for Indian markets — courses, research materials and tools built from real portfolio experience, not hype.', 'type' => 'textarea'],
+		'sci_footer_copyright'    => ['label' => __('Copyright text (leave blank to auto-generate)', 'sco-investor'), 'default' => '', 'type' => 'text'],
+		'sci_newsletter_heading'  => ['label' => __('Newsletter column heading', 'sco-investor'),       'default' => 'Stay Updated', 'type' => 'text'],
+		'sci_newsletter_tagline'  => ['label' => __('Newsletter column tagline', 'sco-investor'),       'default' => 'Market insights and new course drops in your inbox.', 'type' => 'text'],
+	];
+	foreach ($footer_settings as $key => $cfg) {
+		$sanitize = $cfg['type'] === 'textarea' ? 'sanitize_textarea_field' : 'sanitize_text_field';
+		$wp_customize->add_setting($key, ['default' => $cfg['default'], 'sanitize_callback' => $sanitize, 'transport' => 'refresh']);
+		$wp_customize->add_control($key, ['section' => 'sci_footer', 'label' => $cfg['label'], 'type' => $cfg['type']]);
+	}
+
+	/**
 	 * Images — visual elements the owner can swap without touching code or
 	 * hiring a designer. Both optional; the theme's existing built-in
 	 * visuals keep showing until something is uploaded here.
 	 */
 	$wp_customize->add_section('sci_images', [
 		'title'    => __('Images', 'sco-investor'),
-		'priority' => 33,
+		'priority' => 39,
 	]);
 
 	$wp_customize->add_setting('sci_hero_image', [

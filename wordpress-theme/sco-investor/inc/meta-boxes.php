@@ -9,8 +9,9 @@
 if (!defined('ABSPATH')) exit;
 
 function sci_add_meta_boxes() {
-	add_meta_box('sci_course_details', __('Course Details', 'sco-investor'), 'sci_render_course_meta_box', 'course', 'normal', 'high');
-	add_meta_box('sci_material_details', __('Material Details', 'sco-investor'), 'sci_render_material_meta_box', 'material', 'normal', 'high');
+	add_meta_box('sci_course_details',       __('Course Details', 'sco-investor'),      'sci_render_course_meta_box',       'course',       'normal', 'high');
+	add_meta_box('sci_material_details',     __('Material Details', 'sco-investor'),    'sci_render_material_meta_box',     'material',     'normal', 'high');
+	add_meta_box('sci_testimonial_details',  __('Testimonial Details', 'sco-investor'), 'sci_render_testimonial_meta_box',  'testimonial',  'normal', 'high');
 }
 add_action('add_meta_boxes', 'sci_add_meta_boxes');
 
@@ -193,6 +194,71 @@ function sci_render_material_meta_box($post) {
 	</script>
 	<?php
 }
+
+function sci_render_testimonial_meta_box($post) {
+	wp_nonce_field('sci_save_testimonial_meta', 'sci_testimonial_meta_nonce');
+
+	$quote    = get_post_meta($post->ID, '_sci_testi_quote', true);
+	$role     = get_post_meta($post->ID, '_sci_testi_role', true);
+	$stars    = (int) get_post_meta($post->ID, '_sci_testi_stars', true) ?: 5;
+	$initials = get_post_meta($post->ID, '_sci_testi_initials', true);
+	?>
+	<p class="description" style="margin-bottom:12px;"><?php esc_html_e('The Title field above is the reviewer\'s name. Fill in their quote and details below.', 'sco-investor'); ?></p>
+	<table class="form-table">
+		<tr>
+			<th><label for="sci_testi_quote"><?php esc_html_e('Quote', 'sco-investor'); ?></label></th>
+			<td>
+				<textarea id="sci_testi_quote" name="sci_testi_quote" rows="4" class="large-text"><?php echo esc_textarea($quote); ?></textarea>
+				<p class="description"><?php esc_html_e('The review text. Do not include quotation marks — the theme adds them automatically.', 'sco-investor'); ?></p>
+			</td>
+		</tr>
+		<tr>
+			<th><label for="sci_testi_role"><?php esc_html_e('Role / Location', 'sco-investor'); ?></label></th>
+			<td>
+				<input type="text" id="sci_testi_role" name="sci_testi_role" value="<?php echo esc_attr($role); ?>" class="regular-text" placeholder="<?php esc_attr_e('e.g. Working Professional, Pune', 'sco-investor'); ?>">
+			</td>
+		</tr>
+		<tr>
+			<th><label for="sci_testi_stars"><?php esc_html_e('Star Rating', 'sco-investor'); ?></label></th>
+			<td>
+				<select id="sci_testi_stars" name="sci_testi_stars">
+					<?php for ($i = 5; $i >= 1; $i--) : ?>
+						<option value="<?php echo esc_attr($i); ?>" <?php selected($stars, $i); ?>><?php echo esc_html(str_repeat('★', $i) . ' (' . $i . ')'); ?></option>
+					<?php endfor; ?>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th><label for="sci_testi_initials"><?php esc_html_e('Initials Override', 'sco-investor'); ?></label></th>
+			<td>
+				<input type="text" id="sci_testi_initials" name="sci_testi_initials" value="<?php echo esc_attr($initials); ?>" class="small-text" maxlength="3" placeholder="AB">
+				<p class="description"><?php esc_html_e('Optional. Leave blank to auto-generate from the name above. Shown in the avatar circle when no photo is set.', 'sco-investor'); ?></p>
+			</td>
+		</tr>
+	</table>
+	<p class="description"><?php esc_html_e('To show a photo, set a Featured Image in the sidebar. To control display order, change the Order field under Page Attributes.', 'sco-investor'); ?></p>
+	<?php
+}
+
+function sci_save_testimonial_meta($post_id) {
+	if (!isset($_POST['sci_testimonial_meta_nonce']) || !wp_verify_nonce($_POST['sci_testimonial_meta_nonce'], 'sci_save_testimonial_meta')) return;
+	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+	if (!current_user_can('edit_post', $post_id)) return;
+
+	if (isset($_POST['sci_testi_quote'])) {
+		update_post_meta($post_id, '_sci_testi_quote', sanitize_textarea_field(wp_unslash($_POST['sci_testi_quote'])));
+	}
+	if (isset($_POST['sci_testi_role'])) {
+		update_post_meta($post_id, '_sci_testi_role', sanitize_text_field(wp_unslash($_POST['sci_testi_role'])));
+	}
+	if (isset($_POST['sci_testi_stars'])) {
+		update_post_meta($post_id, '_sci_testi_stars', min(5, max(1, absint($_POST['sci_testi_stars']))));
+	}
+	if (isset($_POST['sci_testi_initials'])) {
+		update_post_meta($post_id, '_sci_testi_initials', sanitize_text_field(wp_unslash($_POST['sci_testi_initials'])));
+	}
+}
+add_action('save_post_testimonial', 'sci_save_testimonial_meta');
 
 function sci_enqueue_meta_box_assets($hook) {
 	if ($hook !== 'post.php' && $hook !== 'post-new.php') return;
