@@ -95,6 +95,32 @@ class SCI_Widget_Materials extends \Elementor\Widget_Base {
 		]);
 
 		$this->end_controls_section();
+
+		// ── Style tab ───────────────────────────────────────────────────────
+		$this->start_controls_section('section_style', [
+			'label' => __('Heading Style', 'sco-investor'),
+			'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+		]);
+
+		$this->add_control('style_eyebrow_color', [
+			'label'     => __('Eyebrow Color', 'sco-investor'),
+			'type'      => \Elementor\Controls_Manager::COLOR,
+			'selectors' => ['{{WRAPPER}} .section-head .eyebrow' => 'color: {{VALUE}}'],
+		]);
+
+		$this->add_control('style_heading_color', [
+			'label'     => __('Heading Color', 'sco-investor'),
+			'type'      => \Elementor\Controls_Manager::COLOR,
+			'selectors' => ['{{WRAPPER}} .section-head h2' => 'color: {{VALUE}}'],
+		]);
+
+		$this->add_control('style_desc_color', [
+			'label'     => __('Description Color', 'sco-investor'),
+			'type'      => \Elementor\Controls_Manager::COLOR,
+			'selectors' => ['{{WRAPPER}} .section-head p' => 'color: {{VALUE}}'],
+		]);
+
+		$this->end_controls_section();
 	}
 
 	protected function render() {
@@ -126,9 +152,9 @@ class SCI_Widget_Materials extends \Elementor\Widget_Base {
 		$query = new WP_Query($query_args);
 
 		if (!empty($s['eyebrow']) || !empty($s['heading'])) : ?>
-			<div class="section-header center" style="margin-bottom:2rem;">
+			<div class="section-head reveal">
 				<?php if (!empty($s['eyebrow'])) : ?>
-					<span class="eyebrow"><?php echo esc_html($s['eyebrow']); ?></span>
+					<div class="eyebrow"><span class="dot"></span> <?php echo esc_html($s['eyebrow']); ?></div>
 				<?php endif; ?>
 				<?php if (!empty($s['heading'])) : ?>
 					<h2><?php echo esc_html($s['heading']); ?></h2>

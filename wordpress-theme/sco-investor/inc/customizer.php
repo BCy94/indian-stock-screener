@@ -10,6 +10,42 @@ function sci_sanitize_checkbox($value) {
 }
 
 function sci_customize_register($wp_customize) {
+	/**
+	 * Brand Colors — first section on purpose (priority 5): color is the
+	 * first thing an owner reaches for when making the theme "theirs".
+	 * Every control here maps to a CSS custom property consumed sitewide
+	 * (buttons, links, accents, ticker up/down, backgrounds) — see
+	 * inc/brand-colors.php for the actual override output. Only the
+	 * accent color is picked directly; its darker hover-state and
+	 * translucent-background variants are derived automatically so the
+	 * owner never has to hand-pick three coordinated shades.
+	 */
+	$wp_customize->add_section('sci_brand_colors', [
+		'title'       => __('Brand Colors', 'sco-investor'),
+		'priority'    => 5,
+		'description' => __('Change these and every button, link, highlight and price tag on the site updates to match — no code, no CSS editing.', 'sco-investor'),
+	]);
+
+	$color_controls = [
+		'sci_color_accent'   => ['default' => '#C9A24B', 'label' => __('Accent / Brand Color', 'sco-investor'), 'description' => __('Used for buttons, links, badges and highlights sitewide.', 'sco-investor')],
+		'sci_color_up'       => ['default' => '#3F8F5F', 'label' => __('Gain / Positive Color', 'sco-investor'), 'description' => __('Stock ticker and calculator "up"/positive values.', 'sco-investor')],
+		'sci_color_down'     => ['default' => '#B0473E', 'label' => __('Loss / Negative Color', 'sco-investor'), 'description' => __('Stock ticker "down"/negative values.', 'sco-investor')],
+		'sci_color_dark_bg'  => ['default' => '#14171F', 'label' => __('Dark Mode Background', 'sco-investor'), 'description' => __('Main background color in dark mode (default).', 'sco-investor')],
+		'sci_color_light_bg' => ['default' => '#F6F1E7', 'label' => __('Light Mode Background', 'sco-investor'), 'description' => __('Main background color when a visitor switches to light mode.', 'sco-investor')],
+	];
+	foreach ($color_controls as $key => $cfg) {
+		$wp_customize->add_setting($key, [
+			'default'           => $cfg['default'],
+			'sanitize_callback' => 'sanitize_hex_color',
+			'transport'         => 'refresh',
+		]);
+		$wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, $key, [
+			'section'     => 'sci_brand_colors',
+			'label'       => $cfg['label'],
+			'description' => $cfg['description'],
+		]));
+	}
+
 	$wp_customize->add_section('sci_theme_options', [
 		'title'    => __('So Called Investor — Theme Options', 'sco-investor'),
 		'priority' => 30,

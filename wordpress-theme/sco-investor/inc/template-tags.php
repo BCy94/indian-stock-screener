@@ -103,6 +103,24 @@ function sci_show($mod, $default = true) {
 }
 
 /**
+ * Whether the Page assigned as the static homepage (Settings > Reading)
+ * has been deliberately given its own content — either authored directly
+ * (classic/block editor) or built with a page builder like Elementor.
+ * front-page.php uses this to decide whether to defer entirely to that
+ * content instead of rendering its own hardcoded hero/stats/etc. sections,
+ * which is what makes the homepage genuinely rearrangeable with Elementor
+ * (or any other page-content editor) instead of permanently fixed in PHP.
+ * A fresh/untouched homepage Page has empty post_content, so this returns
+ * false and today's default homepage design keeps rendering unchanged.
+ */
+function sci_page_has_custom_content($page_id) {
+	if (!$page_id) return false;
+	if (get_post_meta($page_id, '_elementor_edit_mode', true) === 'builder') return true;
+	$content = get_post_field('post_content', $page_id);
+	return trim(wp_strip_all_tags((string) $content)) !== '';
+}
+
+/**
  * The owner's free Stock Screener tool URL, set via Customizer.
  * Returns '' when not configured so callers can hide the link entirely
  * rather than pointing at a guessed/broken URL.

@@ -68,10 +68,41 @@ class SCI_Widget_Stats extends \Elementor\Widget_Base {
 		}
 
 		$this->end_controls_section();
+
+		// ── Style tab ───────────────────────────────────────────────────────
+		$this->start_controls_section('section_style', [
+			'label' => __('Style', 'sco-investor'),
+			'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+		]);
+
+		$this->add_control('style_number_color', [
+			'label'       => __('Number Color', 'sco-investor'),
+			'type'        => \Elementor\Controls_Manager::COLOR,
+			'description' => __('Leave blank to use the sitewide Brand/Accent Color.', 'sco-investor'),
+			'selectors'   => ['{{WRAPPER}} .stat-box .num' => 'color: {{VALUE}}'],
+		]);
+
+		$this->add_control('style_label_color', [
+			'label'     => __('Label Color', 'sco-investor'),
+			'type'      => \Elementor\Controls_Manager::COLOR,
+			'selectors' => ['{{WRAPPER}} .stat-box .label' => 'color: {{VALUE}}'],
+		]);
+
+		$this->add_control('style_box_bg', [
+			'label'     => __('Tile Background Color', 'sco-investor'),
+			'type'      => \Elementor\Controls_Manager::COLOR,
+			'selectors' => ['{{WRAPPER}} .stat-box' => 'background-color: {{VALUE}}'],
+		]);
+
+		$this->end_controls_section();
 	}
 
 	protected function render() {
 		$s = $this->get_settings_for_display();
+		// Reuses .stats-row / .stat-box / .num / .label — the exact classes
+		// main.css styles for the native homepage stats section (card
+		// background, gold number color, dim label) — so this widget
+		// matches instead of rendering as bare, unstyled numbers.
 		?>
 		<div class="stats-row sci-elementor-stats">
 		<?php for ($i = 1; $i <= 4; $i++) :
@@ -81,14 +112,14 @@ class SCI_Widget_Stats extends \Elementor\Widget_Base {
 			$label    = $s["stat_{$i}_label"];
 			if ($count === '' && $count !== 0) continue;
 			?>
-			<div class="stat-item">
-				<div class="stat-number"
+			<div class="stat-box glass">
+				<div class="num"
 					data-count="<?php echo esc_attr($count); ?>"
 					data-suffix="<?php echo esc_attr($suffix); ?>"
 					data-decimals="<?php echo esc_attr($decimals); ?>"
 				>0</div>
 				<?php if ($label) : ?>
-					<div class="stat-label"><?php echo esc_html($label); ?></div>
+					<div class="label"><?php echo esc_html($label); ?></div>
 				<?php endif; ?>
 			</div>
 		<?php endfor; ?>

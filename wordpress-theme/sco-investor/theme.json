@@ -3,7 +3,7 @@
 	"version": 2,
 	"settings": {
 		"color": {
-			"custom": false,
+			"custom": true,
 			"customDuotone": false,
 			"customGradient": false,
 			"defaultGradients": false,

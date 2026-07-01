@@ -3,7 +3,27 @@
  * Static homepage. All text, stats, features, and CTA content is editable
  * via Appearance → Customize. Testimonials come from the Testimonials CPT.
  * Courses and materials are live WP_Query loops.
+ *
+ * front-page.php always wins WordPress's template hierarchy for the
+ * homepage, regardless of any Page Template assigned in wp-admin — so
+ * without the check below, building the homepage in Elementor (or even
+ * just writing content in the block editor) would be silently ignored on
+ * the live site. If the Page assigned as the homepage (Settings > Reading)
+ * has real content of its own, defer to it completely; otherwise keep
+ * today's designed-in-PHP homepage exactly as-is.
  */
+$sci_front_page_id = ('page' === get_option('show_on_front')) ? (int) get_option('page_on_front') : 0;
+if ($sci_front_page_id && sci_page_has_custom_content($sci_front_page_id)) {
+	get_header();
+	while (have_posts()) : the_post();
+		echo '<div class="post-content sci-custom-front-page">';
+		the_content();
+		echo '</div>';
+	endwhile;
+	get_footer();
+	return;
+}
+
 get_header();
 
 // ── Hero ──────────────────────────────────────────────────────────────────

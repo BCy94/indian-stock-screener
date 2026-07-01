@@ -68,6 +68,21 @@ class SCI_Widget_Calculator extends \Elementor\Widget_Base {
 		]);
 
 		$this->end_controls_section();
+
+		// ── Style tab ───────────────────────────────────────────────────────
+		$this->start_controls_section('section_style', [
+			'label' => __('Style', 'sco-investor'),
+			'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+		]);
+
+		$this->add_control('style_accent_color', [
+			'label'       => __('Accent Color (slider, chart, total)', 'sco-investor'),
+			'type'        => \Elementor\Controls_Manager::COLOR,
+			'description' => __('Leave blank to use the sitewide Brand Color (Customize → Brand Colors).', 'sco-investor'),
+			'selectors'   => ['{{WRAPPER}}' => '--accent: {{VALUE}};'],
+		]);
+
+		$this->end_controls_section();
 	}
 
 	protected function render() {

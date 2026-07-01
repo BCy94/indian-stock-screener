@@ -119,6 +119,59 @@ class SCI_Widget_Hero extends \Elementor\Widget_Base {
 		]);
 
 		$this->end_controls_section();
+
+		// ── Style tab ───────────────────────────────────────────────────────
+		$this->start_controls_section('section_style_text', [
+			'label' => __('Text Colors', 'sco-investor'),
+			'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+		]);
+
+		$this->add_control('style_eyebrow_color', [
+			'label'     => __('Eyebrow Color', 'sco-investor'),
+			'type'      => \Elementor\Controls_Manager::COLOR,
+			'selectors' => ['{{WRAPPER}} .hero-copy .eyebrow' => 'color: {{VALUE}}'],
+		]);
+
+		$this->add_control('style_heading_color', [
+			'label'     => __('Heading Color', 'sco-investor'),
+			'type'      => \Elementor\Controls_Manager::COLOR,
+			'selectors' => ['{{WRAPPER}} .hero-copy h1' => 'color: {{VALUE}}'],
+		]);
+
+		$this->add_control('style_accent_color', [
+			'label'       => __('Accent Word Color', 'sco-investor'),
+			'type'        => \Elementor\Controls_Manager::COLOR,
+			'description' => __('Leave blank to use the sitewide Brand Color (Customize → Brand Colors).', 'sco-investor'),
+			'selectors'   => ['{{WRAPPER}} .hero-copy h1 .text-accent' => 'color: {{VALUE}}'],
+		]);
+
+		$this->add_control('style_lead_color', [
+			'label'     => __('Lead Text Color', 'sco-investor'),
+			'type'      => \Elementor\Controls_Manager::COLOR,
+			'selectors' => ['{{WRAPPER}} .hero-copy p.lead' => 'color: {{VALUE}}'],
+		]);
+
+		$this->end_controls_section();
+
+		$this->start_controls_section('section_style_section', [
+			'label' => __('Section', 'sco-investor'),
+			'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+		]);
+
+		$this->add_control('style_bg_color', [
+			'label'     => __('Background Color', 'sco-investor'),
+			'type'      => \Elementor\Controls_Manager::COLOR,
+			'selectors' => ['{{WRAPPER}} .hero' => 'background-color: {{VALUE}}'],
+		]);
+
+		$this->add_responsive_control('style_padding', [
+			'label'      => __('Section Padding', 'sco-investor'),
+			'type'       => \Elementor\Controls_Manager::DIMENSIONS,
+			'size_units' => ['px', 'em', '%'],
+			'selectors'  => ['{{WRAPPER}} .hero' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};'],
+		]);
+
+		$this->end_controls_section();
 	}
 
 	protected function render() {
@@ -139,18 +192,23 @@ class SCI_Widget_Hero extends \Elementor\Widget_Base {
 		$badges = array_filter([$s['trust_1'] ?? '', $s['trust_2'] ?? '', $s['trust_3'] ?? '']);
 
 		$img_url = !empty($s['hero_image']['url']) ? esc_url($s['hero_image']['url']) : '';
+
+		// Reuses the exact classes main.css already styles for the native
+		// homepage hero (.hero / .hero-grid / .hero-copy / .lead / .hero-actions
+		// / .hero-visual / .hero-card) so this widget looks identical instead
+		// of rendering as bare, unstyled markup.
 		?>
 		<section class="hero sci-elementor-hero">
-			<div class="container">
-				<div class="hero-body">
+			<div class="container <?php echo $img_url ? 'hero-grid' : ''; ?>">
+				<div class="hero-copy">
 					<?php if (!empty($s['eyebrow'])) : ?>
-						<span class="eyebrow"><?php echo esc_html($s['eyebrow']); ?></span>
+						<div class="eyebrow"><span class="dot"></span> <?php echo esc_html($s['eyebrow']); ?></div>
 					<?php endif; ?>
-					<h1 class="hero-title"><?php echo $heading_html; // already escaped above ?></h1>
+					<h1><?php echo $heading_html; // already escaped above ?></h1>
 					<?php if (!empty($s['lead'])) : ?>
-						<p class="hero-lead"><?php echo esc_html($s['lead']); ?></p>
+						<p class="lead"><?php echo esc_html($s['lead']); ?></p>
 					<?php endif; ?>
-					<div class="hero-ctas">
+					<div class="hero-actions">
 						<?php if (!empty($s['cta1_text'])) : ?>
 							<a href="<?php echo $cta1_url; ?>" class="btn btn-primary"><?php echo esc_html($s['cta1_text']); ?></a>
 						<?php endif; ?>
@@ -168,7 +226,9 @@ class SCI_Widget_Hero extends \Elementor\Widget_Base {
 				</div>
 				<?php if ($img_url) : ?>
 					<div class="hero-visual">
-						<img src="<?php echo $img_url; ?>" alt="" loading="eager" style="border-radius:12px;max-width:100%;height:auto;">
+						<div class="hero-card hero-card--main hero-card--custom-image glass">
+							<img src="<?php echo $img_url; ?>" alt="" loading="eager" class="hero-custom-image">
+						</div>
 					</div>
 				<?php endif; ?>
 			</div>
