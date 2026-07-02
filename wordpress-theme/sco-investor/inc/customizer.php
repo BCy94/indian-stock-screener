@@ -320,5 +320,33 @@ function sci_customize_register($wp_customize) {
 		'description' => __('Used for Facebook/Twitter/etc. link previews on any page that has no featured image of its own.', 'sco-investor'),
 		'mime_type'   => 'image',
 	]));
+
+	/**
+	 * Archive Pages — the Courses and Materials listings are auto-generated
+	 * from published posts (not a single Page an owner can open in
+	 * Elementor), so their heading text lives here instead. The card grid
+	 * itself always reflects live Course/Material content and can't be
+	 * hidden/reordered from this panel — only the text above it.
+	 */
+	$wp_customize->add_section('sci_archive_pages', [
+		'title'    => __('Archive Pages (Courses/Materials)', 'sco-investor'),
+		'priority' => 45,
+	]);
+
+	$archive_fields = [
+		'sci_courses_archive_eyebrow'    => ['default' => '', 'label' => __('Courses — Eyebrow (blank = auto "N Courses · Lifetime Access")', 'sco-investor'), 'type' => 'text'],
+		'sci_courses_archive_heading'    => ['default' => 'Courses that turn theory into portfolio decisions', 'label' => __('Courses — Heading', 'sco-investor'), 'type' => 'text'],
+		'sci_courses_archive_accent'     => ['default' => 'portfolio decisions', 'label' => __('Courses — Gold Accent Words (must match heading exactly)', 'sco-investor'), 'type' => 'text'],
+		'sci_courses_archive_desc'       => ['default' => 'Self-paced video courses with downloadable worksheets, quizzes and lifetime updates. One-time payment, no recurring fees.', 'label' => __('Courses — Description', 'sco-investor'), 'type' => 'textarea'],
+		'sci_materials_archive_eyebrow'  => ['default' => 'Free Forever', 'label' => __('Materials — Eyebrow', 'sco-investor'), 'type' => 'text'],
+		'sci_materials_archive_heading'  => ['default' => 'Super Investor Materials Library', 'label' => __('Materials — Heading', 'sco-investor'), 'type' => 'text'],
+		'sci_materials_archive_accent'   => ['default' => 'Materials Library', 'label' => __('Materials — Gold Accent Words (must match heading exactly)', 'sco-investor'), 'type' => 'text'],
+		'sci_materials_archive_desc'     => ['default' => 'Templates, checklists, reports and tools — free to download, no signup gimmicks, no spam.', 'label' => __('Materials — Description', 'sco-investor'), 'type' => 'textarea'],
+	];
+	foreach ($archive_fields as $key => $cfg) {
+		$sanitize = $cfg['type'] === 'textarea' ? 'sanitize_textarea_field' : 'sanitize_text_field';
+		$wp_customize->add_setting($key, ['default' => $cfg['default'], 'sanitize_callback' => $sanitize, 'transport' => 'refresh']);
+		$wp_customize->add_control($key, ['section' => 'sci_archive_pages', 'label' => $cfg['label'], 'type' => $cfg['type']]);
+	}
 }
 add_action('customize_register', 'sci_customize_register');

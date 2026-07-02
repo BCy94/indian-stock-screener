@@ -12,6 +12,7 @@ define('SCI_THEME_URI', get_template_directory_uri());
 require SCI_THEME_DIR . '/inc/setup.php';
 require SCI_THEME_DIR . '/inc/customizer.php';
 require SCI_THEME_DIR . '/inc/brand-colors.php';
+require SCI_THEME_DIR . '/inc/page-colors.php';
 require SCI_THEME_DIR . '/inc/template-tags.php';
 require SCI_THEME_DIR . '/inc/seo.php';
 require SCI_THEME_DIR . '/inc/schema.php';

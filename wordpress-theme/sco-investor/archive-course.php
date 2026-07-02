@@ -15,14 +15,26 @@ get_header();
 
 $levels       = get_terms(['taxonomy' => 'course_level', 'hide_empty' => false]);
 $course_count = wp_count_posts('course')->publish;
+
+$archive_eyebrow = get_theme_mod('sci_courses_archive_eyebrow', '');
+if (!$archive_eyebrow) {
+	$archive_eyebrow = sprintf(_n('%d Course · Lifetime Access', '%d Courses · Lifetime Access', $course_count, 'sco-investor'), $course_count);
+}
+$archive_heading = esc_html(get_theme_mod('sci_courses_archive_heading', 'Courses that turn theory into portfolio decisions'));
+$archive_accent  = esc_html(get_theme_mod('sci_courses_archive_accent', 'portfolio decisions'));
+$archive_desc    = get_theme_mod('sci_courses_archive_desc', 'Self-paced video courses with downloadable worksheets, quizzes and lifetime updates. One-time payment, no recurring fees.');
+
+$archive_heading_html = ($archive_accent && strpos($archive_heading, $archive_accent) !== false)
+	? str_replace($archive_accent, '<span class="text-accent">' . $archive_accent . '</span>', $archive_heading)
+	: $archive_heading;
 ?>
 
 <header class="page-hero">
 	<div class="container">
 		<div class="breadcrumb"><a href="<?php echo esc_url(home_url('/')); ?>"><?php esc_html_e('Home', 'sco-investor'); ?></a><span>/</span><span><?php esc_html_e('Courses', 'sco-investor'); ?></span></div>
-		<div class="eyebrow center" style="margin:0 auto;"><span class="dot"></span> <?php echo esc_html(sprintf(_n('%d Course · Lifetime Access', '%d Courses · Lifetime Access', $course_count, 'sco-investor'), $course_count)); ?></div>
-		<h1><?php esc_html_e('Courses that turn theory', 'sco-investor'); ?><br><?php esc_html_e('into', 'sco-investor'); ?> <span class="text-accent"><?php esc_html_e('portfolio decisions', 'sco-investor'); ?></span></h1>
-		<p><?php esc_html_e('Self-paced video courses with downloadable worksheets, quizzes and lifetime updates. One-time payment, no recurring fees.', 'sco-investor'); ?></p>
+		<div class="eyebrow center" style="margin:0 auto;"><span class="dot"></span> <?php echo esc_html($archive_eyebrow); ?></div>
+		<h1><?php echo $archive_heading_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — already escaped above ?></h1>
+		<?php if ($archive_desc) : ?><p><?php echo esc_html($archive_desc); ?></p><?php endif; ?>
 	</div>
 </header>
 

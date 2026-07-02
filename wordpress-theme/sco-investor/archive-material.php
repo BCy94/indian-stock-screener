@@ -7,14 +7,23 @@
  */
 
 get_header();
+
+$archive_eyebrow = get_theme_mod('sci_materials_archive_eyebrow', 'Free Forever');
+$archive_heading = esc_html(get_theme_mod('sci_materials_archive_heading', 'Super Investor Materials Library'));
+$archive_accent  = esc_html(get_theme_mod('sci_materials_archive_accent', 'Materials Library'));
+$archive_desc    = get_theme_mod('sci_materials_archive_desc', 'Templates, checklists, reports and tools — free to download, no signup gimmicks, no spam.');
+
+$archive_heading_html = ($archive_accent && strpos($archive_heading, $archive_accent) !== false)
+	? str_replace($archive_accent, '<span class="text-accent">' . $archive_accent . '</span>', $archive_heading)
+	: $archive_heading;
 ?>
 
 <header class="page-hero">
 	<div class="container">
 		<div class="breadcrumb"><a href="<?php echo esc_url(home_url('/')); ?>"><?php esc_html_e('Home', 'sco-investor'); ?></a><span>/</span><span><?php esc_html_e('Materials', 'sco-investor'); ?></span></div>
-		<div class="eyebrow center" style="margin:0 auto;"><span class="dot"></span> <?php esc_html_e('Free Forever', 'sco-investor'); ?></div>
-		<h1><?php esc_html_e('Super Investor', 'sco-investor'); ?><br><span class="text-accent"><?php esc_html_e('Materials Library', 'sco-investor'); ?></span></h1>
-		<p><?php esc_html_e('Templates, checklists, reports and tools — free to download, no signup gimmicks, no spam.', 'sco-investor'); ?></p>
+		<?php if ($archive_eyebrow) : ?><div class="eyebrow center" style="margin:0 auto;"><span class="dot"></span> <?php echo esc_html($archive_eyebrow); ?></div><?php endif; ?>
+		<h1><?php echo $archive_heading_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped — already escaped above ?></h1>
+		<?php if ($archive_desc) : ?><p><?php echo esc_html($archive_desc); ?></p><?php endif; ?>
 	</div>
 </header>
 

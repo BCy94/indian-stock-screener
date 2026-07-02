@@ -65,6 +65,14 @@ function sci_render_setup_page() {
 								<td><a href="<?php echo esc_url(admin_url('customize.php?autofocus[section]=sci_homepage_sections')); ?>" class="button"><?php esc_html_e('Toggle Sections', 'sco-investor'); ?></a></td>
 							</tr>
 							<tr>
+								<td><strong><?php esc_html_e('Brand Colors', 'sco-investor'); ?></strong><br><small><?php esc_html_e('Change the accent, gain/loss and background colors sitewide', 'sco-investor'); ?></small></td>
+								<td><a href="<?php echo esc_url(admin_url('customize.php?autofocus[section]=sci_brand_colors')); ?>" class="button"><?php esc_html_e('Edit Colors', 'sco-investor'); ?></a></td>
+							</tr>
+							<tr>
+								<td><strong><?php esc_html_e('Courses / Materials Archive Text', 'sco-investor'); ?></strong><br><small><?php esc_html_e('Heading and description shown above the Courses and Materials listing pages', 'sco-investor'); ?></small></td>
+								<td><a href="<?php echo esc_url(admin_url('customize.php?autofocus[section]=sci_archive_pages')); ?>" class="button"><?php esc_html_e('Edit Archive Text', 'sco-investor'); ?></a></td>
+							</tr>
+							<tr>
 								<td><strong><?php esc_html_e('Footer', 'sco-investor'); ?></strong><br><small><?php esc_html_e('Tagline, copyright text, newsletter wording, social links', 'sco-investor'); ?></small></td>
 								<td><a href="<?php echo esc_url(admin_url('customize.php?autofocus[section]=sci_footer')); ?>" class="button"><?php esc_html_e('Edit Footer', 'sco-investor'); ?></a></td>
 							</tr>
@@ -90,6 +98,19 @@ function sci_render_setup_page() {
 						<a href="<?php echo esc_url(admin_url('post-new.php?post_type=testimonial')); ?>" class="button button-primary" style="margin-left:12px;"><?php esc_html_e('Add Testimonial', 'sco-investor'); ?></a>
 						<a href="<?php echo esc_url(admin_url('edit.php?post_type=testimonial')); ?>" class="button" style="margin-left:6px;"><?php printf(esc_html__('Testimonials (%d)', 'sco-investor'), $testi_count); ?></a>
 					</p>
+
+					<h4 style="margin-top:20px;">🧩 <?php esc_html_e('Full drag-and-drop editing (Elementor)', 'sco-investor'); ?></h4>
+					<p><?php esc_html_e('Install the free Elementor plugin to visually add, remove and rearrange sections with zero code:', 'sco-investor'); ?></p>
+					<ul>
+						<li>✓ <?php esc_html_e('Home, About, Contact, Calculator, and any new Page you create can be fully rebuilt in Elementor — drag in the 6 "So Called Investor" widgets (Hero, Stats, Courses, Materials, Testimonials, Calculator) in any order, mixed with Elementor\'s own text/image/spacer widgets.', 'sco-investor'); ?></li>
+						<li>✓ <?php esc_html_e('Each Page, Course and Material has its own "Page Color Override" box (bottom-right when editing) — pick an Accent and Background color just for that one page, leave blank to use the sitewide Brand Colors.', 'sco-investor'); ?></li>
+						<li>ℹ️ <?php esc_html_e('The Courses and Materials listing (archive) pages are auto-generated from your published content, not a single Page — their layout is fixed, but the heading/description text above the grid is editable (see "Courses / Materials Archive Text" above), and they always follow your Brand Colors automatically.', 'sco-investor'); ?></li>
+					</ul>
+					<?php if (!class_exists('\Elementor\Plugin')) : ?>
+						<p><a href="<?php echo esc_url(admin_url('plugin-install.php?s=elementor&tab=search&type=term')); ?>" class="button button-primary"><?php esc_html_e('Install Elementor', 'sco-investor'); ?></a></p>
+					<?php else : ?>
+						<p><a href="<?php echo esc_url(admin_url('edit.php?post_type=page')); ?>" class="button"><?php esc_html_e('Go to Pages', 'sco-investor'); ?></a></p>
+					<?php endif; ?>
 				</div>
 			</div>
 

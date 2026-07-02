@@ -20,6 +20,26 @@ $sci_form_flag = isset($_GET['sci_form']) ? sanitize_text_field(wp_unslash($_GET
 	</div>
 </header>
 
+<?php
+/*
+ * Anything the owner writes or builds (classic/block editor or Elementor)
+ * in this Page's own content shows here, above the contact form — the
+ * form and FAQ below stay fixed since they're working functionality, not
+ * placeholder content, but this section is free to add to/rearrange.
+ */
+while (have_posts()) : the_post();
+	if (trim(wp_strip_all_tags(get_the_content()))) :
+		?>
+		<section class="section section--tight">
+			<div class="container" style="max-width:760px;">
+				<div class="post-content"><?php the_content(); ?></div>
+			</div>
+		</section>
+		<?php
+	endif;
+endwhile;
+?>
+
 <section class="section section--tight">
 	<div class="container contact-grid">
 
