@@ -98,12 +98,9 @@
     $('refreshBtn').disabled=true;$('refreshBtn').textContent='↻ Loading…';
     try{
       const stamp=Date.now();
-      const [csvRes,statusRes]=await Promise.all([fetch(`./data/latest.csv.gz?v=${stamp}`,{cache:'no-store'}),fetch(`./data/status.json?v=${stamp}`,{cache:'no-store'})]);
+      const [csvRes,statusRes]=await Promise.all([fetch(`./data/latest.csv?v=${stamp}`,{cache:'no-store'}),fetch(`./data/status.json?v=${stamp}`,{cache:'no-store'})]);
       if(!csvRes.ok)throw new Error(`Dataset request failed (${csvRes.status})`);
-      if(!('DecompressionStream' in window))throw new Error('This browser does not support gzip decompression. Please open the dashboard in a recent version of Chrome, Edge, Firefox or Safari.');
-      const decompressor=new DecompressionStream('gzip');
-      const csvStream=csvRes.body.pipeThrough(decompressor);
-      const csv=await new Response(csvStream).text();if(statusRes.ok)status=await statusRes.json();
+      const csv=await csvRes.text();if(statusRes.ok)status=await statusRes.json();
       const newRows=parseCSV(csv);if(!newRows.length)throw new Error('The latest dataset has no stock rows.');
       const valid=newRows.filter(r=>n(r['TODAY % CHANGE'])!==null&&n(r['TODAY CANDLE BODY %'])!==null&&n(r['TODAY CANDLE RANGE %'])!==null);
       if(valid.length===0)throw new Error('The published dataset contains no populated EOD metrics.');
