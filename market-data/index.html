@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <title>NSE Market Data Explorer</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1220;--panel:#111c2e;--panel2:#15233a;--line:#263650;--muted:#91a2ba;--text:#eaf0f8;--accent:#79a7ff;--green:#31c48d;--red:#ff6b76;--amber:#e9b85c;--shadow:0 16px 40px rgba(0,0,0,.22)}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(1000px 500px at 10% -15%,#1c3153 0%,transparent 65%),var(--bg);color:var(--text);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .wrap{max-width:1600px;margin:auto;padding:28px 26px 52px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}.brand{display:flex;align-items:center;gap:14px}.mark{height:44px;width:44px;border-radius:13px;background:linear-gradient(135deg,#2864c8,#73a7ff);display:grid;place-items:center;font-weight:900;font-size:18px;box-shadow:0 9px 24px #1b4b9470}.eyebrow{color:var(--accent);text-transform:uppercase;letter-spacing:.15em;font-size:10px;font-weight:800}.brand h1{font-size:22px;letter-spacing:-.03em;margin:2px 0 0}.actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.btn{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text);padding:9px 13px;font:600 12px inherit;cursor:pointer}.btn.primary{background:#285fba;border-color:#3978d9}.btn:hover{filter:brightness(1.12)}.meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:17px}.pill{border:1px solid var(--line);border-radius:100px;padding:6px 10px;color:var(--muted);font-size:11px;background:#101a2a}.pill strong{color:var(--text);font-weight:700}.pill.good{border-color:#256e59;color:#8fe2c2}.pill.warn{border-color:#80602c;color:#f4d18a}
+    .notice{background:#17283e;border:1px solid #2c476a;border-radius:12px;padding:12px 14px;color:#b9c9df;margin-bottom:18px;font-size:12px}.notice strong{color:#fff}.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:18px}.kpi{background:linear-gradient(155deg,var(--panel),#0e1929);border:1px solid var(--line);border-radius:14px;padding:15px 16px;box-shadow:var(--shadow);min-width:0}.kpi .label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800}.kpi .value{font-size:25px;letter-spacing:-.04em;font-weight:750;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kpi .sub{color:var(--muted);font-size:10px;margin-top:3px}.positive{color:var(--green)!important}.negative{color:var(--red)!important}.neutral{color:var(--muted)!important}
+    .panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);overflow:hidden}.controls{display:grid;grid-template-columns:minmax(220px,1.5fr) repeat(4,minmax(145px,1fr)) auto;gap:10px;padding:14px;border-bottom:1px solid var(--line);align-items:end}.field label{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:800;margin:0 0 6px}.field input,.field select{width:100%;min-width:0;background:#0c1727;border:1px solid #2a3b55;color:var(--text);border-radius:9px;padding:10px 11px;font:inherit;outline:none}.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #5b8fe522}.table-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px}.table-head h2{font-size:14px;margin:0}.table-head p{margin:3px 0 0;color:var(--muted);font-size:11px}.count{font-size:11px;color:var(--muted)}.table-wrap{overflow:auto;max-height:calc(100vh - 360px);min-height:400px;border-top:1px solid var(--line)}table{width:100%;border-collapse:separate;border-spacing:0;white-space:nowrap;font-variant-numeric:tabular-nums}thead th{position:sticky;top:0;z-index:2;background:#17243a;color:#b9c8dc;text-align:right;padding:11px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid #354967;cursor:pointer;user-select:none}thead th:first-child,tbody td:first-child{text-align:left;position:sticky;left:0;z-index:1}thead th:first-child{z-index:3;background:#17243a}tbody td{padding:10px 12px;border-bottom:1px solid #1e2c42;text-align:right;color:#d8e2f0;font-size:12px}tbody tr:hover td{background:#1a2a42}tbody td:first-child{background:#111c2e;font-weight:750;color:#fff}tbody tr:hover td:first-child{background:#1a2a42}.ticker{display:flex;align-items:center;gap:8px}.mini{font-size:9px;color:#9aacc4;border:1px solid #35445b;border-radius:5px;padding:1px 5px}.sort{color:#6f8db6;margin-left:4px}.pagination{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;border-top:1px solid var(--line);color:var(--muted);font-size:11px}.pages{display:flex;align-items:center;gap:7px}.pages select{background:#0c1727;color:var(--text);border:1px solid var(--line);padding:6px 8px;border-radius:7px}.smallbtn{background:#16243a;border:1px solid var(--line);border-radius:7px;padding:6px 9px;color:var(--text);cursor:pointer}.smallbtn:disabled{opacity:.35;cursor:not-allowed}.footer{display:flex;justify-content:space-between;gap:20px;color:#71839d;font-size:10px;margin:13px 2px}.loading,.error{padding:35px;text-align:center;color:var(--muted)}.error{color:#ff9ca4}.hide{display:none!important}
+    @media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.controls{grid-template-columns:repeat(3,minmax(0,1fr))}.search-field{grid-column:span 2}}
+    @media(max-width:680px){.wrap{padding:18px 12px 35px}.topbar{align-items:flex-start;flex-direction:column}.brand h1{font-size:19px}.actions{width:100%}.kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.kpi{padding:12px}.kpi .value{font-size:21px}.controls{grid-template-columns:1fr 1fr}.search-field{grid-column:span 2}.field.last{grid-column:span 2}.table-wrap{max-height:65vh;min-height:360px}.footer{flex-direction:column}.table-head{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <div class="brand"><div class="mark">N</div><div><div class="eyebrow">Market intelligence · NSE India</div><h1>Market Data Explorer</h1></div></div>
+      <div class="actions"><button class="btn" id="refreshBtn">↻ Refresh data</button><button class="btn primary" id="exportBtn">↓ Export filtered CSV</button></div>
+    </header>
+
+    <div class="meta">
+      <span class="pill" id="asOfPill">Bhavcopy date: <strong>Loading…</strong></span>
+      <span class="pill" id="updatedPill">Last pipeline update: <strong>Loading…</strong></span>
+      <span class="pill" id="coveragePill">Matched symbols: <strong>—</strong></span>
+      <span class="pill good" id="autoPill">● Auto-refresh every 15 min</span>
+    </div>
+
+    <div class="notice"><strong>Column definitions:</strong> <strong>%CHANGE</strong> is preserved from your original 03-Nov-2026 pre-open CSV snapshot. <strong>TODAY % CHANGE</strong>, <strong>CANDLE BODY %</strong> and <strong>CANDLE RANGE %</strong> are refreshed from the latest NSE EOD Bhavcopy. Body = (Close − Open) / Open; Range = (High − Low) / Open.</div>
+
+    <section class="kpis">
+      <div class="kpi"><div class="label">Watchlist stocks</div><div class="value" id="kTotal">—</div><div class="sub">Original 2,234-symbol universe</div></div>
+      <div class="kpi"><div class="label">Gainers</div><div class="value positive" id="kGainers">—</div><div class="sub">Positive close-to-prev-close</div></div>
+      <div class="kpi"><div class="label">Losers</div><div class="value negative" id="kLosers">—</div><div class="sub">Negative close-to-prev-close</div></div>
+      <div class="kpi"><div class="label">Average today change</div><div class="value" id="kAverage">—</div><div class="sub">Mean across matched symbols</div></div>
+      <div class="kpi"><div class="label">Top mover</div><div class="value" id="kTop">—</div><div class="sub" id="kTopSub">Best positive return</div></div>
+    </section>
+
+    <section class="panel">
+      <div class="controls">
+        <div class="field search-field"><label for="search">Search symbol</label><input id="search" type="search" placeholder="Search e.g. RELIANCE, ICICIBANK…" autocomplete="off"></div>
+        <div class="field"><label for="moveFilter">Today % Change</label><select id="moveFilter"><option value="all">All stocks</option><option value="gainers">Gainers only</option><option value="losers">Losers only</option><option value="above2">Above +2%</option><option value="below2">Below −2%</option></select></div>
+        <div class="field"><label for="candleFilter">Candle body</label><select id="candleFilter"><option value="all">All candles</option><option value="bull">Bullish body</option><option value="bear">Bearish body</option><option value="doji">Near doji (±0.1%)</option></select></div>
+        <div class="field"><label for="seriesFilter">EOD series</label><select id="seriesFilter"><option value="all">All series</option></select></div>
+        <div class="field"><label for="sortSelect">Sort by</label><select id="sortSelect"><option value="TODAY % CHANGE|desc">Today % Change ↓</option><option value="TODAY % CHANGE|asc">Today % Change ↑</option><option value="TODAY CANDLE BODY %|desc">Candle Body ↓</option><option value="TODAY CANDLE RANGE %|desc">Candle Range ↓</option><option value="SYMBOL|asc">Symbol A–Z</option><option value="EOD CLOSE|desc">EOD Close ↓</option><option value="%CHANGE|desc">Original %CHANGE ↓</option></select></div>
+      </div>
+      <div class="table-head"><div><h2>Stock-level EOD data</h2><p>Click any column heading to sort. All percentage values are based on the latest published EOD report.</p></div><div class="count" id="resultCount">Loading rows…</div></div>
+      <div class="table-wrap" id="tableWrap"><div class="loading" id="loading">Loading the latest published NSE dataset…</div><table id="stockTable" class="hide"><thead><tr id="tableHeader"></tr></thead><tbody id="tableBody"></tbody></table></div>
+      <div class="pagination"><div id="pageInfo">—</div><div class="pages"><label for="pageSize">Rows</label><select id="pageSize"><option>25</option><option selected>50</option><option>100</option><option>250</option></select><button class="smallbtn" id="prevPage">← Prev</button><span id="pageNumber">1 / 1</span><button class="smallbtn" id="nextPage">Next →</button></div></div>
+    </section>
+    <div class="footer"><span>Source: NSE India · Full Bhavcopy / CM UDiFF Bhavcopy Final</span><span>Informational data only. Verify prices with NSE before making trading decisions.</span></div>
+  </main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const DISPLAY_COLUMNS = [
+    {key:'SYMBOL',label:'Symbol',type:'text'},
+    {key:'%CHANGE',label:'%CHANGE',type:'pct',hint:'Original pre-open snapshot'},
+    {key:'TODAY % CHANGE',label:'Today % Change',type:'pct'},
+    {key:'TODAY CANDLE BODY %',label:'Candle Body %',type:'pct'},
+    {key:'TODAY CANDLE RANGE %',label:'Candle Range %',type:'pct'},
+    {key:'EOD PREV CLOSE',label:'Prev Close',type:'num'},
+    {key:'EOD OPEN',label:'Open',type:'num'},
+    {key:'EOD HIGH',label:'High',type:'num'},
+    {key:'EOD LOW',label:'Low',type:'num'},
+    {key:'EOD CLOSE',label:'Close',type:'num'},
+    {key:'EOD SERIES',label:'Series',type:'text'}
+  ];
+  let rows=[], headers=[], filtered=[], page=1, sortKey='TODAY % CHANGE', sortDir='desc', pageSize=50, status={};
+
+  function parseCSV(text){
+    const out=[];let row=[],field='',quoted=false;
+    for(let i=0;i<text.length;i++){
+      const c=text[i],n=text[i+1];
+      if(quoted){if(c==='"'&&n==='"'){field+='"';i++;}else if(c==='"'){quoted=false;}else field+=c;}
+      else if(c==='"')quoted=true;
+      else if(c===','){row.push(field);field='';}
+      else if(c==='\n'){row.push(field.replace(/\r$/,''));if(row.some(v=>v!==''))out.push(row);row=[];field='';}
+      else field+=c;
+    }
+    if(field.length||row.length){row.push(field.replace(/\r$/,''));out.push(row);}
+    const keys=(out.shift()||[]).map(v=>v.trim());
+    return out.map(values=>Object.fromEntries(keys.map((k,i)=>[k,(values[i]||'').trim()])));
+  }
+  function n(v){if(v===null||v===undefined||v==='')return null;const x=Number(String(v).replace(/,/g,'').replace(/%/g,'').trim());return Number.isFinite(x)?x:null;}
+  function pct(v){const x=n(v);return x===null?'—':`${x>0?'+':''}${x.toFixed(2)}%`;}
+  function price(v){const x=n(v);return x===null?'—':x.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
+  function cls(v){const x=n(v);return x===null?'neutral':x>0?'positive':x<0?'negative':'neutral';}
+  function escapeHTML(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function compare(a,b,key){if(key==='SYMBOL'||key==='EOD SERIES')return String(a[key]||'').localeCompare(String(b[key]||''));const av=n(a[key]),bv=n(b[key]);if(av===null&&bv===null)return 0;if(av===null)return 1;if(bv===null)return -1;return av-bv;}
+  function setStatus(text,kind=''){const p=$('asOfPill');p.innerHTML=`Bhavcopy date: <strong>${escapeHTML(text)}</strong>`;p.className='pill '+kind;}
+
+  async function loadData(showLoading=true){
+    if(showLoading){$('loading').classList.remove('hide');$('loading').textContent='Loading the latest published NSE dataset…';$('stockTable').classList.add('hide');}
+    $('refreshBtn').disabled=true;$('refreshBtn').textContent='↻ Loading…';
+    try{
+      const stamp=Date.now();
+      const [csvRes,statusRes]=await Promise.all([fetch(`./data/latest.csv.gz?v=${stamp}`,{cache:'no-store'}),fetch(`./data/status.json?v=${stamp}`,{cache:'no-store'})]);
+      if(!csvRes.ok)throw new Error(`Dataset request failed (${csvRes.status})`);
+      if(!('DecompressionStream' in window))throw new Error('This browser does not support gzip decompression. Please open the dashboard in a recent version of Chrome, Edge, Firefox or Safari.');
+      const decompressor=new DecompressionStream('gzip');
+      const csvStream=csvRes.body.pipeThrough(decompressor);
+      const csv=await new Response(csvStream).text();if(statusRes.ok)status=await statusRes.json();
+      const newRows=parseCSV(csv);if(!newRows.length)throw new Error('The latest dataset has no stock rows.');
+      const valid=newRows.filter(r=>n(r['TODAY % CHANGE'])!==null&&n(r['TODAY CANDLE BODY %'])!==null&&n(r['TODAY CANDLE RANGE %'])!==null);
+      if(valid.length===0)throw new Error('The published dataset contains no populated EOD metrics.');
+      rows=newRows;headers=Object.keys(rows[0]);
+      const d=status.data_as_of_display||rows[0]['EOD DATE']||'Latest available';
+      setStatus(d,'good');
+      $('updatedPill').innerHTML=`Last pipeline update: <strong>${escapeHTML(status.updated_at_display||'Not supplied')}</strong>`;
+      $('coveragePill').innerHTML=`Matched symbols: <strong>${status.matched_symbols??valid.length}/${status.total_watchlist_symbols??rows.length}</strong>`;
+      $('kTotal').textContent=rows.length.toLocaleString('en-IN');
+      const changes=rows.map(r=>n(r['TODAY % CHANGE'])).filter(x=>x!==null);
+      const gainers=changes.filter(x=>x>0),losers=changes.filter(x=>x<0);
+      $('kGainers').textContent=gainers.length.toLocaleString('en-IN');$('kLosers').textContent=losers.length.toLocaleString('en-IN');
+      const avg=changes.length?changes.reduce((a,b)=>a+b,0)/changes.length:null;$('kAverage').textContent=avg===null?'—':pct(avg);
+      $('kAverage').className='value '+cls(avg);
+      const sorted=[...rows].filter(r=>n(r['TODAY % CHANGE'])!==null).sort((a,b)=>n(b['TODAY % CHANGE'])-n(a['TODAY % CHANGE']));
+      $('kTop').textContent=sorted[0]?.SYMBOL||'—';$('kTopSub').textContent=sorted[0]?pct(sorted[0]['TODAY % CHANGE'])+' today':'No EOD data';
+      fillSeries();$('loading').classList.add('hide');$('stockTable').classList.remove('hide');applyFilters();
+    }catch(err){$('loading').classList.remove('hide');$('loading').classList.add('error');$('loading').textContent=`Unable to load the published dataset: ${err.message}. The last published files remain unchanged; try Refresh data again later.`;setStatus('Load error','warn');}
+    finally{$('refreshBtn').disabled=false;$('refreshBtn').textContent='↻ Refresh data';}
+  }
+  function fillSeries(){const sel=$('seriesFilter'),old=sel.value;const values=[...new Set(rows.map(r=>r['EOD SERIES']).filter(Boolean))].sort();sel.innerHTML='<option value="all">All series</option>'+values.map(v=>`<option value="${escapeHTML(v)}">${escapeHTML(v)}</option>`).join('');if(values.includes(old))sel.value=old;}
+  function applyFilters(){
+    const q=$('search').value.trim().toUpperCase(),mf=$('moveFilter').value,cf=$('candleFilter').value,sf=$('seriesFilter').value;
+    filtered=rows.filter(r=>{
+      if(q&&!String(r.SYMBOL||'').toUpperCase().includes(q))return false;
+      const move=n(r['TODAY % CHANGE']),body=n(r['TODAY CANDLE BODY %']);
+      if(mf==='gainers'&&!(move>0))return false;if(mf==='losers'&&!(move<0))return false;if(mf==='above2'&&!(move>=2))return false;if(mf==='below2'&&!(move<=-2))return false;
+      if(cf==='bull'&&!(body>0))return false;if(cf==='bear'&&!(body<0))return false;if(cf==='doji'&&!(body!==null&&Math.abs(body)<=.1))return false;
+      if(sf!=='all'&&r['EOD SERIES']!==sf)return false;return true;
+    });
+    const selected=$('sortSelect').value.split('|');sortKey=selected[0];sortDir=selected[1];
+    filtered.sort((a,b)=>compare(a,b,sortKey)*(sortDir==='asc'?1:-1));
+    page=1;renderTable();
+  }
+  function renderHeader(){
+    $('tableHeader').innerHTML=DISPLAY_COLUMNS.map(c=>`<th data-key="${escapeHTML(c.key)}" title="${escapeHTML(c.hint||'Click to sort')}">${escapeHTML(c.label)} <span class="sort">${sortKey===c.key?(sortDir==='asc'?'↑':'↓'):'↕'}</span></th>`).join('');
+    $('tableHeader').querySelectorAll('th').forEach(th=>th.addEventListener('click',()=>{const key=th.dataset.key;if(sortKey===key)sortDir=sortDir==='asc'?'desc':'asc';else{sortKey=key;sortDir=(key==='SYMBOL'||key==='EOD SERIES')?'asc':'desc';}$('sortSelect').value=`${sortKey}|${sortDir}`;filtered.sort((a,b)=>compare(a,b,sortKey)*(sortDir==='asc'?1:-1));renderTable();}));
+  }
+  function renderTable(){
+    renderHeader();const pages=Math.max(1,Math.ceil(filtered.length/pageSize));page=Math.min(page,pages);const start=(page-1)*pageSize,chunk=filtered.slice(start,start+pageSize);
+    $('tableBody').innerHTML=chunk.map(r=>'<tr>'+DISPLAY_COLUMNS.map(c=>{
+      const v=r[c.key];if(c.key==='SYMBOL')return `<td><div class="ticker">${escapeHTML(v)}<span class="mini">${escapeHTML(r['EOD SERIES']||'—')}</span></div></td>`;
+      if(c.type==='pct')return `<td class="${cls(v)}">${pct(v)}</td>`;if(c.type==='num')return `<td>${price(v)}</td>`;return `<td>${escapeHTML(v||'—')}</td>`;
+    }).join('')+'</tr>').join('');
+    $('resultCount').textContent=`${filtered.length.toLocaleString('en-IN')} of ${rows.length.toLocaleString('en-IN')} stocks`;
+    $('pageInfo').textContent=filtered.length?`Showing ${start+1}–${Math.min(start+pageSize,filtered.length)} of ${filtered.length}`:'No stocks match these filters';
+    $('pageNumber').textContent=`${page} / ${pages}`;$('prevPage').disabled=page<=1;$('nextPage').disabled=page>=pages;
+  }
+  function exportCSV(){
+    if(!filtered.length)return;const cols=headers.length?headers:Object.keys(filtered[0]);
+    const q=v=>{const s=String(v??'');return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+    const content=[cols.map(q).join(','),...filtered.map(r=>cols.map(c=>q(r[c])).join(','))].join('\r\n');
+    const blob=new Blob([content],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`NSE_Market_Data_${(status.data_as_of||'latest').replaceAll('-','')}.csv`;a.click();URL.revokeObjectURL(url);
+  }
+  ['search','moveFilter','candleFilter','seriesFilter'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',applyFilters));
+  $('sortSelect').addEventListener('change',applyFilters);$('pageSize').addEventListener('change',()=>{pageSize=Number($('pageSize').value);page=1;renderTable();});
+  $('prevPage').addEventListener('click',()=>{page=Math.max(1,page-1);renderTable();});$('nextPage').addEventListener('click',()=>{page++;renderTable();});
+  $('refreshBtn').addEventListener('click',()=>loadData(true));$('exportBtn').addEventListener('click',exportCSV);
+  loadData(true);setInterval(()=>loadData(false),15*60*1000);
+})();
+</script>
+</body>
+</html>
