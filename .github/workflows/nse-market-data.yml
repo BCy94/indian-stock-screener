@@ -1,0 +1,56 @@
+name: Refresh NSE EOD Market Data
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/nse-market-data.yml'
+      - 'scripts/update_market_data.py'
+      - 'market-data/data/base_watchlist.csv'
+  # Two weekday attempts: 20:00 IST and 22:00 IST.
+  schedule:
+    - cron: '30 14 * * 1-5'
+    - cron: '30 16 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      bhavcopy_date:
+        description: 'Optional exact trading date to backfill (YYYY-MM-DD)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nse-market-data-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out website
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch NSE Bhavcopy and calculate EOD metrics
+        env:
+          BHAVCOPY_DATE: ${{ github.event.inputs.bhavcopy_date }}
+        run: python scripts/update_market_data.py
+
+      - name: Publish refreshed dataset to GitHub Pages
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add market-data/data/latest.csv market-data/data/status.json
+          if git diff --cached --quiet; then
+            echo 'No new bhavcopy data to publish.'
+          else
+            git commit -m "data: refresh NSE EOD market metrics"
+            git push
+          fi
