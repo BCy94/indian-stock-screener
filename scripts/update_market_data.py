@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Fetch the latest NSE CM Bhavcopy and refresh the fixed watchlist."""
-import csv, gzip, io, json, os, re, sys, time, zipfile
+import csv, io, json, os, re, sys, time, zipfile
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -10,7 +10,7 @@ from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "market-data" / "data"
-BASE = DATA / "base_watchlist.csv.gz"
+BASE = DATA / "base_watchlist.csv"
 LATEST = DATA / "latest.csv"
 STATUS = DATA / "status.json"
 IST = ZoneInfo("Asia/Kolkata")
@@ -122,7 +122,7 @@ def latest_report(today):
 
 
 def load_base():
-    with gzip.open(BASE, "rt", encoding="utf-8-sig", newline="") as f:
+    with BASE.open("r", encoding="utf-8-sig", newline="") as f:
         r = csv.DictReader(f)
         fields = r.fieldnames or []
         rows = [{k: (v or "").strip() for k, v in x.items()} for x in r]
@@ -170,9 +170,6 @@ def main():
     with tmp.open("w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=headers); w.writeheader(); w.writerows(out)
     tmp.replace(LATEST)
-    gz_tmp = DATA / "latest.csv.gz.tmp"
-    with LATEST.open("rb") as src, gzip.open(gz_tmp, "wb", compresslevel=9) as dst: dst.write(src.read())
-    gz_tmp.replace(DATA / "latest.csv.gz")
     now = datetime.now(IST)
     status = {
         "data_as_of": d.isoformat(), "data_as_of_display": d.strftime("%d %B %Y"),
