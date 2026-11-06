@@ -1,18 +1,17 @@
 {
-  "data_as_of": "2026-11-05",
-  "data_as_of_display": "05 November 2026",
-  "updated_at_ist": "2026-11-06T03:38:14+05:30",
-  "updated_at_display": "06 Nov 2026, 03:38:14 AM IST",
+  "data_as_of": "2026-11-06",
+  "data_as_of_display": "06 November 2026",
+  "updated_at_ist": "2026-11-07T02:00:56+05:30",
+  "updated_at_display": "07 Nov 2026, 02:00:56 AM IST",
   "total_watchlist_symbols": 2234,
-  "matched_symbols": 2232,
-  "unmatched_symbols": 2,
-  "match_coverage_pct": 99.91,
+  "matched_symbols": 2233,
+  "unmatched_symbols": 1,
+  "match_coverage_pct": 99.96,
   "unmatched_sample": [
-    "AAKAAR",
     "NOVARTIND"
   ],
   "source_report": "Full Bhavcopy and Security Deliverable data",
-  "source_url": "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_05112026.csv",
+  "source_url": "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_06112026.csv",
   "status": "ok",
   "series_policy": "Prefer EQ; use an available alternate series only if EQ is absent.",
   "metrics": {
