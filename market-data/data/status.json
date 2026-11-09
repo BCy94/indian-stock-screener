@@ -1,17 +1,20 @@
 {
-  "data_as_of": "2026-11-06",
-  "data_as_of_display": "06 November 2026",
-  "updated_at_ist": "2026-11-07T03:09:33+05:30",
-  "updated_at_display": "07 Nov 2026, 03:09:33 AM IST",
+  "data_as_of": "2026-11-09",
+  "data_as_of_display": "09 November 2026",
+  "updated_at_ist": "2026-11-10T05:01:43+05:30",
+  "updated_at_display": "10 Nov 2026, 05:01:43 AM IST",
   "total_watchlist_symbols": 2234,
-  "matched_symbols": 2233,
-  "unmatched_symbols": 1,
-  "match_coverage_pct": 99.96,
+  "matched_symbols": 2230,
+  "unmatched_symbols": 4,
+  "match_coverage_pct": 99.82,
   "unmatched_sample": [
-    "NOVARTIND"
+    "NOVARTIND",
+    "PRECISION",
+    "VASUPRADA",
+    "SVLL"
   ],
   "source_report": "Full Bhavcopy and Security Deliverable data",
-  "source_url": "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_06112026.csv",
+  "source_url": "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_09112026.csv",
   "status": "ok",
   "series_policy": "Prefer EQ; use an available alternate series only if EQ is absent.",
   "metrics": {
