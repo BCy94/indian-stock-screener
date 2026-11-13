@@ -1,17 +1,21 @@
 {
-  "data_as_of": "2026-11-12",
-  "data_as_of_display": "12 November 2026",
-  "updated_at_ist": "2026-11-13T03:50:01+05:30",
-  "updated_at_display": "13 Nov 2026, 03:50:01 AM IST",
+  "data_as_of": "2026-11-13",
+  "data_as_of_display": "13 November 2026",
+  "updated_at_ist": "2026-11-14T02:27:15+05:30",
+  "updated_at_display": "14 Nov 2026, 02:27:15 AM IST",
   "total_watchlist_symbols": 2234,
-  "matched_symbols": 2233,
-  "unmatched_symbols": 1,
-  "match_coverage_pct": 99.96,
+  "matched_symbols": 2229,
+  "unmatched_symbols": 5,
+  "match_coverage_pct": 99.78,
   "unmatched_sample": [
-    "NOVARTIND"
+    "DURLAX",
+    "AAKAAR",
+    "NOVARTIND",
+    "VASUPRADA",
+    "TERAI"
   ],
   "source_report": "Full Bhavcopy and Security Deliverable data",
-  "source_url": "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_12112026.csv",
+  "source_url": "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_13112026.csv",
   "status": "ok",
   "series_policy": "Prefer EQ; use an available alternate series only if EQ is absent.",
   "metrics": {
