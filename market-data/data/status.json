@@ -1,19 +1,20 @@
 {
-  "data_as_of": "2026-11-16",
-  "data_as_of_display": "16 November 2026",
-  "updated_at_ist": "2026-11-17T05:50:08+05:30",
-  "updated_at_display": "17 Nov 2026, 05:50:08 AM IST",
+  "data_as_of": "2026-11-17",
+  "data_as_of_display": "17 November 2026",
+  "updated_at_ist": "2026-11-18T04:04:27+05:30",
+  "updated_at_display": "18 Nov 2026, 04:04:27 AM IST",
   "total_watchlist_symbols": 2234,
-  "matched_symbols": 2231,
-  "unmatched_symbols": 3,
-  "match_coverage_pct": 99.87,
+  "matched_symbols": 2230,
+  "unmatched_symbols": 4,
+  "match_coverage_pct": 99.82,
   "unmatched_sample": [
     "NOVARTIND",
     "MADHAV",
+    "VASUPRADA",
     "SHIVAM-RE1"
   ],
   "source_report": "Full Bhavcopy and Security Deliverable data",
-  "source_url": "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_16112026.csv",
+  "source_url": "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_17112026.csv",
   "status": "ok",
   "series_policy": "Prefer EQ; use an available alternate series only if EQ is absent.",
   "metrics": {
