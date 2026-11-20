@@ -1,14 +1,14 @@
 {
-  "data_as_of": "2026-11-19",
-  "data_as_of_display": "19 November 2026",
-  "updated_at_ist": "2026-11-20T04:37:45+05:30",
-  "updated_at_display": "20 Nov 2026, 04:37:45 AM IST",
+  "data_as_of": "2026-11-20",
+  "data_as_of_display": "20 November 2026",
+  "updated_at_ist": "2026-11-21T03:25:35+05:30",
+  "updated_at_display": "21 Nov 2026, 03:25:35 AM IST",
   "total_watchlist_symbols": 2234,
   "matched_symbols": 2228,
   "unmatched_symbols": 6,
   "match_coverage_pct": 99.73,
   "unmatched_sample": [
-    "AAKAAR",
+    "SHUKRAPHAR",
     "NOVARTIND",
     "DRAGARWQ",
     "VASUPRADA",
@@ -16,7 +16,7 @@
     "VIRAT"
   ],
   "source_report": "Full Bhavcopy and Security Deliverable data",
-  "source_url": "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_19112026.csv",
+  "source_url": "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_20112026.csv",
   "status": "ok",
   "series_policy": "Prefer EQ; use an available alternate series only if EQ is absent.",
   "metrics": {
